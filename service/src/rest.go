@@ -31,6 +31,11 @@ func registerPlayerHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if _, err := IsStringEmpty(body.Name); err != nil {
+		SendErrorResponse(w, err)
+		return
+	}
+
 	id, err := GameInstance.addPlayerWithName(body.Name)
 	if err != nil {
 		SendErrorResponse(w, err)
@@ -48,6 +53,11 @@ func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request) {
 	var body _RegisterPlayerResponse
 
 	if err := ReadBytesFromBody(req.Body, &body); err != nil {
+		SendErrorResponse(w, err)
+		return
+	}
+
+	if _, err := IsStringEmpty(body.ID); err != nil {
 		SendErrorResponse(w, err)
 		return
 	}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -65,4 +66,14 @@ func ReadBytesFromBody(body io.Reader, dest interface{}) error {
 	}
 
 	return nil
+}
+
+//IsStringEmpty Check for emptyness
+func IsStringEmpty(s string) (bool, error) {
+	if s == "" || len(s) == 0 {
+		err := errors.New("Provided string is empty")
+		CatchError("generateID", err)
+		return true, err
+	}
+	return false, nil
 }

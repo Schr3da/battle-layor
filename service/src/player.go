@@ -3,6 +3,7 @@ package main
 import (
 	"crypto"
 	"encoding/hex"
+	"errors"
 )
 
 //PlayerMode Supporte modes for an Player
@@ -25,6 +26,12 @@ type Player struct {
 }
 
 func generateID(s string) (string, error) {
+	if len(s) == 0 {
+		err := errors.New("Provided string is empty")
+		CatchError("generateID", err)
+		return "", err
+	}
+
 	hash := crypto.SHA256.New()
 
 	if _, err := hash.Write([]byte(s)); err != nil {

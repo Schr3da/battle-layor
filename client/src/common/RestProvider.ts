@@ -5,7 +5,7 @@ export interface IRestData<T> {
     data: T;
 }
 
-const post = <T, K>(url: string, data: T): Promise<K> => {
+const post = <T, K>(url: string, data: T): Promise<K | null> => {
     const config: any = {
         method: "POST",
         mode: "cors", 
@@ -17,7 +17,14 @@ const post = <T, K>(url: string, data: T): Promise<K> => {
         body: JSON.stringify(data), 
     }; 
     
-    return fetch(url, config).then(response => response.json());
+    return fetch(url, config)
+        .then(response => response.json())
+        .then((data) => {
+            if(data.status >= 200 || data.status < 300) {
+                return null;
+            }
+            return data;
+        });
 }
 
 export const getHost = (): string => window.location.host;
@@ -33,21 +40,14 @@ export const isJson = (data: string): boolean => {
     }
 }
 
-export const registerNewPlayer = async (name: string) => {
+export const registerNewPlayer = async (name: string | null) => {
     const host = getOrigin();
-    return await post<{name: string}, IRestData<{id: string}>>
+    return await post<{name: string | null}, IRestData<{id: string}>>
         (host + "/" + REST_PREFIX +"/player/register/", { name });
 }
 
 export const unregisterPlayer = async (id: string | null) => {
-    if (id == null) {
-        return;
-    }
-
     const host = getOrigin();
-    return await post<{id: string}, IRestData<null>>
+    return await post<{id: string | null}, IRestData<null>>
         (host + "/" + REST_PREFIX +"/player/unregister/", { id });
 }
-
-
-

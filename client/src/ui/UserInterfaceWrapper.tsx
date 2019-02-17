@@ -44,12 +44,15 @@ export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperP
 
     private handleRegister = async () => {
         const value = this.state.inputs[InputField.PlayerName];
-
         if (value == null || value.trim().length === 0) {
             return;
         }
 
         const d = await registerNewPlayer(value);
+        if (d == null) {
+            return;
+        }
+
         const state = getGlobalState();
         state.setId(d.data.id);
     }
