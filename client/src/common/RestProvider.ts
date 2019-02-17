@@ -1,6 +1,11 @@
 const REST_PREFIX = "rest";
 
-const post = <T>(url: string, data: T) => {
+export interface IRestData<T> {
+    status: number;
+    data: T;
+}
+
+const post = <T, K>(url: string, data: T): Promise<K> => {
     const config: any = {
         method: "POST",
         mode: "cors", 
@@ -28,7 +33,21 @@ export const isJson = (data: string): boolean => {
     }
 }
 
-export const RegisterNewPlayer = async (name: string) => {
+export const registerNewPlayer = async (name: string) => {
     const host = getOrigin();
-    await post(host + "/" + REST_PREFIX +"/player/register/", { name });
+    return await post<{name: string}, IRestData<{id: string}>>
+        (host + "/" + REST_PREFIX +"/player/register/", { name });
 }
+
+export const unregisterPlayer = async (id: string | null) => {
+    if (id == null) {
+        return;
+    }
+
+    const host = getOrigin();
+    return await post<{id: string}, IRestData<null>>
+        (host + "/" + REST_PREFIX +"/player/unregister/", { id });
+}
+
+
+

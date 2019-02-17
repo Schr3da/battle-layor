@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { RegisterNewPlayer } from "./../common/RestProvider";
+import { getGlobalState } from "./../common/AppState";
+import { registerNewPlayer, unregisterPlayer } from "./../common/RestProvider";
 import { Input } from "./Input";
 
 export interface IUserInterfaceWrapperProps {}
@@ -43,10 +44,19 @@ export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperP
 
     private handleRegister = async () => {
         const value = this.state.inputs[InputField.PlayerName];
+
         if (value == null || value.trim().length === 0) {
             return;
         }
-        await RegisterNewPlayer(value);        
+
+        const d = await registerNewPlayer(value);
+        const state = getGlobalState();
+        state.setId(d.data.id);
+    }
+
+    private handleUnregister = async () => {
+        const state = getGlobalState();
+        await unregisterPlayer(state.getId());
     }
 
     public render() {
@@ -63,6 +73,7 @@ export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperP
             </div>
             <div>
                 <button onClick={this.handleRegister}>Register</button>
+                <button onClick={this.handleUnregister}>Unregister</button>
             </div>
         </div> 
     }    

@@ -10,8 +10,10 @@ export interface IonReceivedObserverCb {
     [SocketDataAction.GAME]: OnReceiveCb[];
 }
 
-class AppState {
-    
+class GlobalState {
+
+    private id: string | null = null;
+
     private provider: WebSocketProvider | null = null;
     
     private socketOpenedCb: IonOpenedObserverCb = {
@@ -28,10 +30,18 @@ class AppState {
         onOpen: this.onSocketOpened,
         onReceive: this.onSocketDataReceived,
     });
-    
+
     private onSocketOpened() {
         this.socketOpenedCb[SocketDataAction.UI].forEach((cb) => cb()); 
         this.socketOpenedCb[SocketDataAction.GAME].forEach((cb) => cb());     
+    }
+
+    public setId(id: string) {
+        this.id = id;
+    }
+
+    public getId(): string | null {
+        return this.id;
     }
 
     private onSocketDataReceived = <T>(data: IWebSocketData<T>) => {
@@ -76,10 +86,10 @@ class AppState {
    
 }
 
-let state: AppState;
-export const getAppState = () => {
+let state: GlobalState;
+export const getGlobalState = () => {
     if (state == null) {
-        state = new AppState();
+        state = new GlobalState();
     }
     return state;
 }

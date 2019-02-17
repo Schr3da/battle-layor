@@ -1,4 +1,3 @@
-
 export const appendClassNames = (className: string, ...others: string[]): string => {
     if (others == null) {
         return className;
