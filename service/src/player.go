@@ -1,6 +1,9 @@
 package main
 
-import "crypto"
+import (
+	"crypto"
+	"encoding/hex"
+)
 
 //PlayerMode Supporte modes for an Player
 type PlayerMode int
@@ -29,12 +32,13 @@ func generateID(s string) (string, error) {
 		return "", err
 	}
 
-	return string(hash.Sum(nil)), nil
+	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
 //NewPlayer Create a new Player based on provided name and position
 func NewPlayer(name string, position Vector2d) (*Player, error) {
 	id, err := generateID(name)
+
 	if err != nil {
 		return nil, err
 	}

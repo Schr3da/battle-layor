@@ -1,20 +1,52 @@
-import { WebSocketProvider, IWebSocketProviderConfig } from "./WebSocketProvider";
+import { WebSocketProvider, IWebSocketProviderConfig, IWebSocketData, OnReceiveCb, OnOpenCb, SocketDataAction } from "./WebSocketProvider";
 
-export class AppState {
+export interface IonOpenedObserverCb {
+    [SocketDataAction.UI]: OnOpenCb[];
+    [SocketDataAction.GAME]: OnOpenCb[];
+}
+
+export interface IonReceivedObserverCb {
+    [SocketDataAction.UI]: OnReceiveCb[];
+    [SocketDataAction.GAME]: OnReceiveCb[];
+}
+
+class AppState {
     
     private provider: WebSocketProvider | null = null;
     
+    private socketOpenedCb: IonOpenedObserverCb = {
+        [SocketDataAction.UI]: [],
+        [SocketDataAction.GAME]: [],
+    };
+
+    private socketDataReceivedCb: IonReceivedObserverCb = {
+        [SocketDataAction.UI]: [],
+        [SocketDataAction.GAME]: [],
+    };
+
     private getDefaultConfig = (): IWebSocketProviderConfig => ({
-        onOpen: this.onConnectionOpened,
-        onReceive: this.onMessageReceived,
+        onOpen: this.onSocketOpened,
+        onReceive: this.onSocketDataReceived,
     });
     
-    private onConnectionOpened() {
-        console.log("Open");
+    private onSocketOpened() {
+        this.socketOpenedCb[SocketDataAction.UI].forEach((cb) => cb()); 
+        this.socketOpenedCb[SocketDataAction.GAME].forEach((cb) => cb());     
     }
 
-    private onMessageReceived = (data: any) => {
-        console.log("Data received", data);        
+    private onSocketDataReceived = <T>(data: IWebSocketData<T>) => {
+        if (data == null || data.action == null) {
+            return;
+        }
+        this.socketDataReceivedCb[data.action].forEach((cb) => cb(data))
+    }
+
+    public registerOpened(type: SocketDataAction, cb: OnOpenCb) {
+        this.socketOpenedCb[type].push(cb);
+    }
+
+    public registerReceived(type: SocketDataAction, cb: OnReceiveCb) {
+        this.socketDataReceivedCb[type].push(cb);
     }
 
     public onSendMessage<T>(data: T) {
@@ -34,4 +66,20 @@ export class AppState {
         const config = this.getDefaultConfig();
         this.provider = new WebSocketProvider(config);
     }
+    
+    public destroy() {
+        this.socketOpenedCb[SocketDataAction.UI] = [];
+        this.socketOpenedCb[SocketDataAction.GAME] = [];
+        this.socketDataReceivedCb[SocketDataAction.UI] = [];
+        this.socketDataReceivedCb[SocketDataAction.GAME] = [];
+    }
+   
+}
+
+let state: AppState;
+export const getAppState = () => {
+    if (state == null) {
+        state = new AppState();
+    }
+    return state;
 }

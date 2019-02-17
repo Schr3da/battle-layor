@@ -21,20 +21,21 @@ func (g *Game) doesPlayerExist(id string) bool {
 	return g.players[id] != nil
 }
 
-func (g *Game) addPlayerWithName(name string) error {
+func (g *Game) addPlayerWithName(name string) (*string, error) {
 	player, err := NewPlayer(name, g.w.pickRandomSpawnPlace())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	id := player.getID()
 	if g.doesPlayerExist(id) {
 		err := errors.New("Player with same ID detected: name:" + name + "id: " + id)
 		CatchError("addPlayerWithName", err)
+		return nil, err
 	}
 
 	g.players[id] = player
-	return nil
+	return &id, nil
 }
 
 func (g *Game) removePlayerWithID(id string) {

@@ -5,6 +5,9 @@ import (
 	"net/http"
 )
 
+//GameInstance Holding Game State
+var GameInstance Game = NewGame()
+
 func main() {
 	InitConfig()
 	InitWSHandler()

@@ -1,27 +1,28 @@
 import { getHost } from "./RestProvider";
 
-type OnOpenCb = () => void;
-type OnReceiveCb = <T>(data: T) => void;
+export interface IWebSocketData<T> {
+    type: SocketDataType;
+    action: SocketDataAction;
+    data: T;
+}
 
-export enum SocketMessageType {
+export enum SocketDataType {
     STRING,
     OBJECT,
 }
 
-export enum SocketMessageAction {
+export enum SocketDataAction {
     GAME,
     UI,
 }
 
+export type OnOpenCb = () => void;
+
+export type OnReceiveCb = <T>(data: IWebSocketData<T>) => void;
+
 export interface IWebSocketProviderConfig {
     onOpen: OnOpenCb;
     onReceive: OnReceiveCb;
-}
-
-export interface ISocketMessage {
-    type: SocketMessageType;
-    action: SocketMessageAction;
-    data: any; 
 }
 
 export class WebSocketProvider {
