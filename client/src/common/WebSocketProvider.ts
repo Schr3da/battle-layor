@@ -1,4 +1,4 @@
-import { getHost } from "./RestProvider";
+import { getHost, isJson } from "./RestProvider";
 
 export interface IWebSocketData<T> {
     type: SocketDataType;
@@ -35,7 +35,7 @@ export class WebSocketProvider {
 
         this.ws = new WebSocket("ws://" + getHost()+ "/socket");
         this.ws.onopen = this.onOpen as any; 
-        this.ws.onmessage = this.onMessage as any;
+        this.ws.onmessage = this.onReceived as any;
         this.ws.onclose = this.onClose as any;
         this.ws.onerror = this.onError as any;  
     }
@@ -44,12 +44,22 @@ export class WebSocketProvider {
         this.config.onOpen();    
     }
 
-    private onMessage = (m: MessageEvent) => {
-        this.config.onReceive(m.data);
+    private onReceived = (m: MessageEvent) => {
+        if (m == null || m.data == null ||  isJson(m.data) === false) {
+            return;
+        }
+        
+        const data = JSON.parse(m.data);
+        this.config.onReceive(data);
     } 
 
-    public onSend(data) {
-        this.ws.send(data);
+    public onSend<T>(data: T) {
+        try {
+            const d = JSON.stringify(data);
+            this.ws.send(d);    
+        } catch {
+            console.error("An error has occurred")
+        }
     }
 
     private onClose= (ws: WebSocket) => {
@@ -61,11 +71,9 @@ export class WebSocketProvider {
     } 
 
     public destroy() {
-        if(this.ws == null) {
-            return
+        if(this.ws != null) {
+            this.ws.close();
         }
-
-        this.ws.close();
     }
 
 }

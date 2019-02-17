@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gorilla/websocket"
-	"log"
 	"net/http"
 )
 
@@ -32,7 +31,7 @@ func entityHandler(w http.ResponseWriter, r *http.Request) {
 	for {
 		mt, data, err := c.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			CatchError("read:", err)
 			break
 		}
 

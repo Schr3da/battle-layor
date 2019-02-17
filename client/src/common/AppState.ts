@@ -31,9 +31,18 @@ class GlobalState {
         onReceive: this.onSocketDataReceived,
     });
 
-    private onSocketOpened() {
+    private onSocketOpened = () => {
         this.socketOpenedCb[SocketDataAction.UI].forEach((cb) => cb()); 
         this.socketOpenedCb[SocketDataAction.GAME].forEach((cb) => cb());     
+        
+        this.sendData({test: ""});   
+    }
+    
+    private onSocketDataReceived = <T>(data: IWebSocketData<T>) => {
+        if (data == null || data.action == null) {
+            return;
+        }
+        this.socketDataReceivedCb[data.action].forEach((cb) => cb(data))
     }
 
     public setId(id: string) {
@@ -44,13 +53,6 @@ class GlobalState {
         return this.id;
     }
 
-    private onSocketDataReceived = <T>(data: IWebSocketData<T>) => {
-        if (data == null || data.action == null) {
-            return;
-        }
-        this.socketDataReceivedCb[data.action].forEach((cb) => cb(data))
-    }
-
     public registerOpened(type: SocketDataAction, cb: OnOpenCb) {
         this.socketOpenedCb[type].push(cb);
     }
@@ -59,7 +61,7 @@ class GlobalState {
         this.socketDataReceivedCb[type].push(cb);
     }
 
-    public onSendMessage<T>(data: T) {
+    public sendData<T>(data: T) {
         if (this.provider == null) {
             console.error("Connection has been closed");
             return;
@@ -82,14 +84,19 @@ class GlobalState {
         this.socketOpenedCb[SocketDataAction.GAME] = [];
         this.socketDataReceivedCb[SocketDataAction.UI] = [];
         this.socketDataReceivedCb[SocketDataAction.GAME] = [];
+
+        if(this.provider != null) {
+            this.provider.destroy();
+            this.provider = null;
+        }
+
     }
    
 }
 
-let state: GlobalState;
 export const getGlobalState = () => {
-    if (state == null) {
-        state = new GlobalState();
+    if ((window as any).state == null) {
+        (window as any).state = new GlobalState();
     }
-    return state;
+    return (window as any).state;
 }

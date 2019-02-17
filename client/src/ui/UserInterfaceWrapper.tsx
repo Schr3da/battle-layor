@@ -55,6 +55,7 @@ export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperP
 
         const state = getGlobalState();
         state.setId(d.data.id);
+        state.newGame();
     }
 
     private handleUnregister = async () => {

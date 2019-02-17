@@ -9,4 +9,11 @@ export class Game {
         wrapper.appendChild(this.renderer.view);    
     }
 
+    public start() {
+        console.log("start");
+    }
+
+    public receivedData(data: any) {
+        console.log(data);
+    }
 }

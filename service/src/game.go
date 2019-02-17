@@ -17,6 +17,10 @@ func NewGame() Game {
 	return g
 }
 
+func (g *Game) getMap() []int {
+	return g.w.walls
+}
+
 func (g *Game) doesPlayerExist(id string) bool {
 	return g.players[id] != nil
 }

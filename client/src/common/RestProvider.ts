@@ -20,7 +20,7 @@ const post = <T, K>(url: string, data: T): Promise<K | null> => {
     return fetch(url, config)
         .then(response => response.json())
         .then((data) => {
-            if(data.status >= 200 || data.status < 300) {
+            if(data.status < 200 || data.status >= 300) {
                 return null;
             }
             return data;
@@ -42,8 +42,9 @@ export const isJson = (data: string): boolean => {
 
 export const registerNewPlayer = async (name: string | null) => {
     const host = getOrigin();
-    return await post<{name: string | null}, IRestData<{id: string}>>
+    const data = await post<{name: string | null}, IRestData<{id: string}>>
         (host + "/" + REST_PREFIX +"/player/register/", { name });
+    return data;        
 }
 
 export const unregisterPlayer = async (id: string | null) => {
