@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"github.com/gorilla/websocket"
+	"log"
 	"net/http"
 )
 
@@ -35,8 +37,27 @@ func entityHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		if err = c.WriteMessage(mt, data); err != nil {
+		resData, err := handleMessage(data)
+		if err = c.WriteMessage(mt, resData); err != nil {
 			CatchError("write", err)
 		}
+	}
+}
+
+func handleMessage(data []byte) ([]byte, error) {
+
+	var d WSRequest
+	if err := ReadBytes(data, &d); err != nil {
+		CatchError("handleMessage", err)
+		return nil, err
+	}
+
+	switch d.Resource {
+	case MAP:
+		log.Print("MAP DATA REQUEST")
+		//TODO return map
+		return data, nil
+	default:
+		return nil, errors.New("Unknown resource request")
 	}
 }

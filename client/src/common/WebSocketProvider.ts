@@ -1,24 +1,32 @@
 import { getHost, isJson } from "./RestProvider";
 
-export interface IWebSocketData<T> {
-    type: SocketDataType;
-    action: SocketDataAction;
+export interface IWSRequest<T> {
+    action: number;
+    resource: WSResource
     data: T;
 }
 
-export enum SocketDataType {
-    STRING,
-    OBJECT,
+export interface IWSResponse<T> {
+    status: number;
+    action: number;
+    resource: WSResource
+    data: T;
 }
 
-export enum SocketDataAction {
-    GAME,
+export enum WSAction {
     UI,
+    GAME,
+}
+
+export enum WSResource {
+    MAP,
+    PLAYER,
+    STATS
 }
 
 export type OnOpenCb = () => void;
 
-export type OnReceiveCb = <T>(data: IWebSocketData<T>) => void;
+export type OnReceiveCb = <T>(data: IWSResponse<T>) => void;
 
 export interface IWebSocketProviderConfig {
     onOpen: OnOpenCb;

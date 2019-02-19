@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Game } from "./Game";
 import { getGlobalState } from "../common/AppState";
-import { SocketDataAction } from "./../common/WebSocketProvider";
+import { WSAction } from "./../common/WebSocketProvider";
 
 export class CanvasWrapper extends React.Component<{}, {}> {
 
@@ -25,8 +25,8 @@ export class CanvasWrapper extends React.Component<{}, {}> {
         this.game = new Game(this.wrapperRef!);
         
         const state = getGlobalState();
-        state.registerOpened(SocketDataAction.GAME, this.onConnectionOpened);
-        state.registerReceived(SocketDataAction.GAME, this.onReceivedData);
+        state.registerOpened(WSAction.GAME, this.onConnectionOpened);
+        state.registerReceived(WSAction.GAME, this.onReceivedData);
     }
 
     public render() {

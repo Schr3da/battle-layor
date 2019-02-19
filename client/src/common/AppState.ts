@@ -1,13 +1,13 @@
-import { WebSocketProvider, IWebSocketProviderConfig, IWebSocketData, OnReceiveCb, OnOpenCb, SocketDataAction } from "./WebSocketProvider";
+import { WebSocketProvider, IWebSocketProviderConfig, IWSRequest, IWSResponse, OnReceiveCb, OnOpenCb, WSAction, WSResource} from "./WebSocketProvider";
 
 export interface IonOpenedObserverCb {
-    [SocketDataAction.UI]: OnOpenCb[];
-    [SocketDataAction.GAME]: OnOpenCb[];
+    [WSAction.UI]: OnOpenCb[];
+    [WSAction.GAME]: OnOpenCb[];
 }
 
 export interface IonReceivedObserverCb {
-    [SocketDataAction.UI]: OnReceiveCb[];
-    [SocketDataAction.GAME]: OnReceiveCb[];
+    [WSAction.UI]: OnReceiveCb[];
+    [WSAction.GAME]: OnReceiveCb[];
 }
 
 class GlobalState {
@@ -17,13 +17,13 @@ class GlobalState {
     private provider: WebSocketProvider | null = null;
     
     private socketOpenedCb: IonOpenedObserverCb = {
-        [SocketDataAction.UI]: [],
-        [SocketDataAction.GAME]: [],
+        [WSAction.UI]: [],
+        [WSAction.GAME]: [],
     };
 
     private socketDataReceivedCb: IonReceivedObserverCb = {
-        [SocketDataAction.UI]: [],
-        [SocketDataAction.GAME]: [],
+        [WSAction.UI]: [],
+        [WSAction.GAME]: [],
     };
 
     private getDefaultConfig = (): IWebSocketProviderConfig => ({
@@ -32,13 +32,13 @@ class GlobalState {
     });
 
     private onSocketOpened = () => {
-        this.socketOpenedCb[SocketDataAction.UI].forEach((cb) => cb()); 
-        this.socketOpenedCb[SocketDataAction.GAME].forEach((cb) => cb());     
+        this.socketOpenedCb[WSAction.UI].forEach((cb) => cb()); 
+        this.socketOpenedCb[WSAction.GAME].forEach((cb) => cb());     
         
-        this.sendData({test: ""});   
+        this.sendData({resource: WSResource.MAP, action: WSAction.GAME, data: []});   
     }
     
-    private onSocketDataReceived = <T>(data: IWebSocketData<T>) => {
+    private onSocketDataReceived = <T>(data: IWSResponse<T>) => {
         if (data == null || data.action == null) {
             return;
         }
@@ -53,15 +53,15 @@ class GlobalState {
         return this.id;
     }
 
-    public registerOpened(type: SocketDataAction, cb: OnOpenCb) {
+    public registerOpened(type: WSAction, cb: OnOpenCb) {
         this.socketOpenedCb[type].push(cb);
     }
 
-    public registerReceived(type: SocketDataAction, cb: OnReceiveCb) {
+    public registerReceived(type: WSAction, cb: OnReceiveCb) {
         this.socketDataReceivedCb[type].push(cb);
     }
 
-    public sendData<T>(data: T) {
+    public sendData<T>(data: IWSRequest<T>) {
         if (this.provider == null) {
             console.error("Connection has been closed");
             return;
@@ -80,10 +80,10 @@ class GlobalState {
     }
     
     public destroy() {
-        this.socketOpenedCb[SocketDataAction.UI] = [];
-        this.socketOpenedCb[SocketDataAction.GAME] = [];
-        this.socketDataReceivedCb[SocketDataAction.UI] = [];
-        this.socketDataReceivedCb[SocketDataAction.GAME] = [];
+        this.socketOpenedCb[WSAction.UI] = [];
+        this.socketOpenedCb[WSAction.GAME] = [];
+        this.socketDataReceivedCb[WSAction.UI] = [];
+        this.socketDataReceivedCb[WSAction.GAME] = [];
 
         if(this.provider != null) {
             this.provider.destroy();
