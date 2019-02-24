@@ -32,16 +32,23 @@ type WSResponse struct {
 //WSAction General Websocket Action type
 type WSAction int
 
+const (
+	//ActionUI Action based on UI
+	ActionUI WSAction = 0
+	//ActionGame Action based on Game
+	ActionGame WSAction = 1
+)
+
 //WSResource General Websocket Resource type
 type WSResource int
 
 const (
-	//MAP Request map state
-	MAP WSResource = 0
-	//PLAYER Request player state
-	PLAYER WSResource = 1
-	//STATS Request stats state
-	STATS WSResource = 2
+	//ResourceMap Request map state
+	ResourceMap WSResource = 0
+	//ResourcePlayer Request player state
+	ResourcePlayer WSResource = 1
+	//ResourceStats Request stats state
+	ResourceStats WSResource = 2
 )
 
 //NewErrorResponse Default error response
@@ -59,6 +66,23 @@ func NewResponse(status int, data interface{}) []byte {
 	d, err := json.Marshal(Response{
 		Status: status,
 		Data:   data,
+	})
+
+	if err != nil {
+		CatchError("New Response", err)
+		return NewErrorResponse()
+	}
+
+	return d
+}
+
+//NewWSResponse Create a new websocket json response object
+func NewWSResponse(status int, action WSAction, resource WSResource, data interface{}) []byte {
+	d, err := json.Marshal(WSResponse{
+		Action:   action,
+		Resource: resource,
+		Status:   status,
+		Data:     data,
 	})
 
 	if err != nil {
@@ -105,6 +129,12 @@ func ReadBytes(data []byte, dest interface{}) error {
 		return err
 	}
 	return nil
+}
+
+//DataToBytes Create
+func DataToBytes(data interface{}) ([]byte, error) {
+
+	return json.Marshal(data)
 }
 
 //IsStringEmpty Check for emptyness

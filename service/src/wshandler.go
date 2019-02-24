@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"github.com/gorilla/websocket"
-	"log"
 	"net/http"
 )
 
@@ -53,9 +52,8 @@ func handleMessage(data []byte) ([]byte, error) {
 	}
 
 	switch d.Resource {
-	case MAP:
-		log.Print("MAP DATA REQUEST")
-		//TODO return map
+	case ResourceMap:
+		data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceMap, GameInstance.w.walls)
 		return data, nil
 	default:
 		return nil, errors.New("Unknown resource request")
