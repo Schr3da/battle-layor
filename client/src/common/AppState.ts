@@ -15,7 +15,7 @@ class GlobalState {
     private id: string | null = null;
 
     private provider: WebSocketProvider | null = null;
-    
+
     private socketOpenedCb: IonOpenedObserverCb = {
         [WSAction.UI]: [],
         [WSAction.GAME]: [],
@@ -32,10 +32,11 @@ class GlobalState {
     });
 
     private onSocketOpened = () => {
+        //Request map data
+        this.sendData({resource: WSResource.MAP, action: WSAction.GAME, data: []});   
+
         this.socketOpenedCb[WSAction.UI].forEach((cb) => cb()); 
         this.socketOpenedCb[WSAction.GAME].forEach((cb) => cb());     
-        
-        this.sendData({resource: WSResource.MAP, action: WSAction.GAME, data: []});   
     }
     
     private onSocketDataReceived = <T>(data: IWSResponse<T>) => {
@@ -78,7 +79,7 @@ class GlobalState {
         const config = this.getDefaultConfig();
         this.provider = new WebSocketProvider(config);
     }
-    
+ 
     public destroy() {
         this.socketOpenedCb[WSAction.UI] = [];
         this.socketOpenedCb[WSAction.GAME] = [];
