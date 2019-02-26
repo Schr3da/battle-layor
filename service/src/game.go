@@ -17,7 +17,7 @@ func NewGame() Game {
 	return g
 }
 
-func (g *Game) getMap() []int {
+func (g *Game) getMap() [][]int {
 	return g.w.walls
 }
 

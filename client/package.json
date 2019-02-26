@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "prettify": "./node_modules/prettier/bin-prettier.js",
         "build-debug": "NODE_ENV=debug node ./node_modules/webpack/bin/webpack.js",
         "start": "NODE_ENV=debug node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0 --port 8888",
         "build-release": "NODE_ENV=release node ./node_modules/webpack/bin/webpack.js"
@@ -27,6 +28,7 @@
         "webpack": "4.17.1",
         "webpack-cli": "3.1.0",
         "webpack-dev-server": "3.1.14",
-        "webpack-hot-middleware": "2.22.3"
+        "webpack-hot-middleware": "2.22.3",
+        "prettier": "1.16.4"
     }
 }
