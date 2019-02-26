@@ -1,5 +1,7 @@
 *dist/
 
+*v8-compile*
+
 # Logs
 logs
 *.log
