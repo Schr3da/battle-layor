@@ -53,7 +53,7 @@ func handleMessage(data []byte) ([]byte, error) {
 
 	switch d.Resource {
 	case ResourceMap:
-		data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceMap, GameInstance.w.walls)
+		data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceMap, GameInstance.w.tiles)
 		return data, nil
 	default:
 		return nil, errors.New("Unknown resource request")

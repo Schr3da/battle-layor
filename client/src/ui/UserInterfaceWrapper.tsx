@@ -20,22 +20,26 @@ export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperP
         super(props);
         this.state = {
             inputs: {
-                player: "",
+                player: "NOT WORKING",
             },
         }
     }
 
-    private handleInputKeyDown = (e: any) => {
-        if (e.keyCode !== 13) {
+    private handleInputKeyUp = (e: any, id: InputField) => {
+        e.persist();
+
+        if (e.keyCode === 13) {
+            this.handleRegister();
             return;
         }
-        this.handleRegister();
+
+        this.handleInputChange(e, id);
     }
 
     private handleInputChange = (e: any, id: InputField) => {
-        e.persist()
-        
-        this.setState((prev) => ({...prev, 
+        e.persist();
+        this.setState((prev) => ({
+            ...prev,  
             inputs: {...prev.inputs,
                 [id]: e.target.value,
             },
@@ -65,15 +69,14 @@ export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperP
 
     public render() {
         const { inputs } = this.state;
-
         return <div className="ui-wrapper">
             <div>
                <Input id={InputField.PlayerName} 
                     className="playername" 
                     placeholder="Name" 
                     value={inputs[InputField.PlayerName]}
-                    onChange={this.handleInputChange} 
-                    onKeyDown={this.handleInputKeyDown}/> 
+                    onChange={this.handleInputChange}
+                    onKeyUp={this.handleInputKeyUp}/> 
             </div>
             <div>
                 <button onClick={this.handleRegister}>Register</button>

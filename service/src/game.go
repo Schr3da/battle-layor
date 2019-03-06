@@ -17,8 +17,8 @@ func NewGame() Game {
 	return g
 }
 
-func (g *Game) getMap() [][]int {
-	return g.w.walls
+func (g *Game) getMap() [MapTilesY][MapTilesX]string {
+	return g.w.tiles
 }
 
 func (g *Game) doesPlayerExist(id string) bool {
