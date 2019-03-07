@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 const (
@@ -16,6 +17,9 @@ const (
 	floor     string = "."
 	corner    string = "!"
 )
+
+var src = rand.NewSource(int64(time.Now().Nanosecond()))
+var seed = rand.New(src)
 
 //World Game World
 type World struct {
@@ -31,10 +35,10 @@ func NewWorld() World {
 }
 
 func generateRoom(start bool, tiles *[MapTilesY][MapTilesX]string) {
-	width := rand.Intn(10) + 5
-	height := rand.Intn(6) + 3
-	left := rand.Intn(MapTilesX-width-2) + 1
-	top := rand.Intn(MapTilesY-height-2) + 1
+	width := seed.Intn(10) + 5
+	height := seed.Intn(6) + 3
+	left := seed.Intn(MapTilesX-width-2) + 1
+	top := seed.Intn(MapTilesY-height-2) + 1
 
 	for y := top - 1; y < top+height+2; y++ {
 		for x := left - 1; x < left+width+2; x++ {
@@ -55,7 +59,7 @@ func generateRoom(start bool, tiles *[MapTilesY][MapTilesX]string) {
 				t := y < top || y > top+height
 				if s != t && tiles[y][x] == wall {
 					doors++
-					if rand.Intn(doors) == 0 {
+					if seed.Intn(doors) == 0 {
 						doorX = x
 						doorY = y
 					}
@@ -88,7 +92,7 @@ func generateRoom(start bool, tiles *[MapTilesY][MapTilesX]string) {
 	}
 
 	if start {
-		tiles[rand.Intn(height)+top][rand.Intn(width)+left] = floor
+		tiles[seed.Intn(height)+top][seed.Intn(width)+left] = floor
 		return
 	}
 }
