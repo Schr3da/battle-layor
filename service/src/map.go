@@ -18,9 +18,6 @@ const (
 	corner    string = "!"
 )
 
-var src = rand.NewSource(int64(time.Now().Nanosecond()))
-var seed = rand.New(src)
-
 //World Game World
 type World struct {
 	tiles [MapTilesY][MapTilesX]string
@@ -34,7 +31,7 @@ func NewWorld() World {
 	return w
 }
 
-func generateRoom(start bool, tiles *[MapTilesY][MapTilesX]string) {
+func generateRoom(start bool, seed *rand.Rand, tiles *[MapTilesY][MapTilesX]string) {
 	width := seed.Intn(10) + 5
 	height := seed.Intn(6) + 3
 	left := seed.Intn(MapTilesX-width-2) + 1
@@ -98,7 +95,6 @@ func generateRoom(start bool, tiles *[MapTilesY][MapTilesX]string) {
 }
 
 func generateTiles() [MapTilesY][MapTilesX]string {
-
 	var tiles [MapTilesY][MapTilesX]string
 
 	for y := 0; y < MapTilesY; y++ {
@@ -107,8 +103,11 @@ func generateTiles() [MapTilesY][MapTilesX]string {
 		}
 	}
 
+	src := rand.NewSource(int64(time.Now().Nanosecond()))
+	seed := rand.New(src)
+
 	for j := 0; j < 1000; j++ {
-		generateRoom(j == 0, &tiles)
+		generateRoom(j == 0, seed, &tiles)
 	}
 
 	fmt.Println(tiles)
