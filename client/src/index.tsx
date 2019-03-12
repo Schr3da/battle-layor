@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { CanvasWrapper } from "./canvas/CanvasWrapper";
+import { MiniMapWrapper } from "./canvas/MiniMapWrapper";
 import { UserInterfaceWrapper } from "./ui/UserInterfaceWrapper";
 
 class App extends React.Component<{}, {}> {
@@ -9,6 +10,7 @@ class App extends React.Component<{}, {}> {
         return <>
             <UserInterfaceWrapper/>
             <CanvasWrapper />
+            <MiniMapWrapper />
         </>
     }
 }

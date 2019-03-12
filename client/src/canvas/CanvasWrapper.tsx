@@ -18,7 +18,7 @@ export class CanvasWrapper extends React.Component<{}, {}> {
     private onReceivedData = (data: any) => {
         if (this.game != null) {
             this.game.receivedData(data);
-        }        
+        }
     }
 
     public componentDidMount() {
@@ -30,7 +30,9 @@ export class CanvasWrapper extends React.Component<{}, {}> {
     }
 
     public render() {
-        return <div ref={(r) => this.wrapperRef = r} className="canvas-wrapper"></div>
+        return <> 
+            <div ref={(r) => this.wrapperRef = r} className="canvas-wrapper"></div>
+        </>
     }
 
 }
