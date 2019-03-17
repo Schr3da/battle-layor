@@ -26,7 +26,8 @@ module.exports = {
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
 			{ test: /\.less$/, loader: 'less-loader' },
-		]
+		    { test: /\.(png|jpg|gif)$/, loader: 'file-loader', options: {} },
+        ]
     },
 	optimization: {
 		minimize: environment === "release"

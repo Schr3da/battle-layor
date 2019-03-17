@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { IWSResponse, WSAction, WSResource } from "./../common/WebSocketProvider";
 import { AssetManager } from "./AssetManager";
 import { Controls } from "./Controls";
+import { Settings } from "./../common/Settings";
 
 export class Game {
 
@@ -20,9 +21,13 @@ export class Game {
         this.controls = new Controls();
         console.log(this.controls);
 
-        this.renderer = new PIXI.Application();
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+        this.renderer = new PIXI.Application({
+            width: Settings.displayWidth, 
+            height: Settings.displayHeight,
+        });
+
         this.renderer.ticker.add(this.render);
-        
         wrapper.appendChild(this.renderer.view);    
     }
 
