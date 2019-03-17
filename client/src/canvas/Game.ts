@@ -7,6 +7,8 @@ import { Settings } from "./../common/Settings";
 
 export class Game {
 
+    private animationFrameHandler: any;
+    private updateHandler: any;
     private renderer: PIXI.Application;
     private assets: AssetManager;
     private controls: Controls;
@@ -14,6 +16,7 @@ export class Game {
 
     constructor(wrapper: Element) {
         this.map = [];    
+        this.animationFrameHandler = null;
 
         this.assets = new AssetManager();
         console.log(this.assets);
@@ -28,17 +31,28 @@ export class Game {
         });
 
         this.renderer.ticker.add(this.render);
-        wrapper.appendChild(this.renderer.view);    
+        wrapper.appendChild(this.renderer.view);        
     }
 
     private render = () => {
         if ((this.map || []).length === 0) {
             return;
         }
+        this.animationFrameHandler = requestAnimationFrame(this.render);
+        this.renderer.render()
+
     }
 
+    private update = () => {
+        console.log("updated") 
+    } 
+
     public start() {
-        console.log("start");
+        cancelAnimationFrame(this.animationFrameHandler);
+        this.animationFrameHandler = requestAnimationFrame( this.render );
+
+        clearInterval(this.updateHandler);
+        this.updateHandler = setInterval(this.update, Settings.refreshTime);    
     }
 
     public receivedData(d: IWSResponse<any>) {
@@ -53,4 +67,14 @@ export class Game {
                 console.log(d);
         }
     }
+
+    public destory() {
+        cancelAnimationFrame(this.animationFrameHandler);
+        clearInterval(this.updateHandler);
+        
+        if (this.renderer != null) {
+            this.renderer.destroy(true);
+        }
+    }
+
 }
