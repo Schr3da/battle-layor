@@ -4,6 +4,8 @@ import { IWSResponse, WSAction, WSResource } from "./../common/WebSocketProvider
 import { AssetManager } from "./AssetManager";
 import { Controls } from "./Controls";
 import { Settings } from "./../common/Settings";
+import { Player } from "./Player";
+import { updateView } from "./Renderer";
 
 export class Game {
 
@@ -13,6 +15,7 @@ export class Game {
     private assets: AssetManager;
     private controls: Controls;
     private map: number[];
+    private player: Player | null = null;
 
     constructor(wrapper: Element) {
         this.map = [];    
@@ -22,7 +25,6 @@ export class Game {
         console.log(this.assets);
 
         this.controls = new Controls();
-        console.log(this.controls);
 
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
         this.renderer = new PIXI.Application({
@@ -44,7 +46,11 @@ export class Game {
     }
 
     private update = () => {
-        console.log("updated") 
+        if (this.player == null) {
+            return;
+        }
+
+        updateView(this.player);    
     } 
 
     public start() {
@@ -63,6 +69,7 @@ export class Game {
         switch(d.resource) {
             case WSResource.MAP:
                 this.map = d.data;
+                this.player = new Player(2, 2, this.map, this.controls);    
             default:        
                 console.log(d);
         }

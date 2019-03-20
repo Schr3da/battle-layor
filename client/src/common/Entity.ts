@@ -34,3 +34,5 @@ export abstract class Entity {
     abstract update(delta: number);
 
 }
+
+

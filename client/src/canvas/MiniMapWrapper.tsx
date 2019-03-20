@@ -2,7 +2,6 @@ import * as React from "react";
 import { getGlobalState } from "./../common/AppState";
 import { WSResource, WSAction } from "./../common/WebSocketProvider";
 
-
 export class MiniMapWrapper extends React.Component {
    
     private canvasRef: HTMLCanvasElement | null = null;
