@@ -15,6 +15,10 @@ export abstract class Entity {
         this.plane = { x: 0, y:1 }; 
     }
 
+    public getPlane() {
+        return this.direction;
+    }
+
     public getPosition(): IVector2d {
         return this.position;
     }

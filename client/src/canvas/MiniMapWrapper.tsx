@@ -28,7 +28,6 @@ export class MiniMapWrapper extends React.Component {
     }
  
     public render() {
-        console.log(getGlobalState())
         return <div className="mini-map-wrapper" >
             <canvas ref={(r) => this.canvasRef = r}></canvas>
         </div>

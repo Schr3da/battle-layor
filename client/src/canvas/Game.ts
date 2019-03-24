@@ -22,8 +22,6 @@ export class Game {
         this.animationFrameHandler = null;
 
         this.assets = new AssetManager();
-        console.log(this.assets);
-
         this.controls = new Controls();
 
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -50,7 +48,7 @@ export class Game {
             return;
         }
 
-        updateView(this.player);    
+        updateView(this.player, this.map, this.assets);    
     } 
 
     public start() {
