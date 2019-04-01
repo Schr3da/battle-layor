@@ -2,7 +2,7 @@ import { Entity } from "../common/Entity";
 import { Settings } from "./../common/Settings";
 import { AssetManager } from "./AssetManager";
 
-const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetManager) => {
+const drawWalls = (scene: PIXI.Container, e: Entity, _map: any[], assets: AssetManager) => {
 	const { displayWidth, displayHeight } = Settings;
 	const zBuffer = [] as any[];
 	const textures = assets.getTextures();
@@ -20,7 +20,7 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
 
 		let mapX = Math.floor(rayPosX);
 		let mapY = Math.floor(rayPosY);
-		// Length of ray from current pos to next x or y side
+
 		const deltaDistX = Math.sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX));
 		const deltaDistY = Math.sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY));
 
@@ -58,15 +58,13 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
 				side = 1;
 			}
 
-			const indexX = Math.round(mapX),
-				indexY = Math.round(mapY);
 
-			if (indexX < 0 || indexY < 0) {
-				hit = 1;
-				break;
-			}
+			hit = 1;
 
-			hit = map[indexX][indexY] > 0 ? 1 : hit;
+			// 
+			// if (map[Math.round(mapX)][Math.round(mapY)] > 0) {
+			// hit = 1;
+			// }
 		}
 
 		let projectedWallDistance = 0;
@@ -88,7 +86,7 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
 		}
 		wallX -= Math.floor(wallX);
 
-		var line = scene.children[rayIdx] as any;
+		var line = scene.children[rayIdx] as PIXI.Sprite;
 		if (line == null) {
 			console.error("no wall slice found");
 			return
@@ -118,8 +116,8 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
 		}
 		line.tint = tint;
 
-		const texture = map[mapX][mapY] - 1;
-		line.setTexture(textures[texture][texX]);
+		const texture = 0;
+		line.texture = textures[texture][texX]
 		line.position.y = drawStart;
 		line.height = drawEnd - drawStart;
 

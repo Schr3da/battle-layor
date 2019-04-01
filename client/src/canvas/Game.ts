@@ -34,6 +34,12 @@ export class Game {
 		this.controls = new Controls();
 
 		this.scene = new PIXI.Container();
+		for (var x = 0; x < Settings.displayWidth; x++) {
+			let sprite = new PIXI.Sprite(undefined);
+			sprite.position.x = x;
+			this.scene.addChild(sprite);
+		}
+
 		this.renderer.stage.addChild(this.scene);
 	}
 
@@ -50,7 +56,6 @@ export class Game {
 		if (this.player == null) {
 			return;
 		}
-
 		updateView(this.scene, this.player, this.map, this.assets);
 	}
 
