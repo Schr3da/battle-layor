@@ -14,45 +14,38 @@ const colorImage = require("./../../assets/img/colorstone.png");
 
 const brick = PIXI.BaseTexture.fromImage(brickImage);
 const wood = PIXI.BaseTexture.fromImage(woodImage);
-const purpstone = PIXI.BaseTexture.fromImage(purpstoneImage);
+export const purpstone = PIXI.BaseTexture.fromImage(purpstoneImage);
 const mossy = PIXI.BaseTexture.fromImage(mossyImage);
-const grey = PIXI.BaseTexture.fromImage(greyImage);
-const blue = PIXI.BaseTexture.fromImage(blueImage);
-const eagle = PIXI.BaseTexture.fromImage(eagleImage);
-const color = PIXI.BaseTexture.fromImage(colorImage);
+export const grey = PIXI.BaseTexture.fromImage(greyImage);
+export const blue = PIXI.BaseTexture.fromImage(blueImage);
+export const eagle = PIXI.BaseTexture.fromImage(eagleImage);
+export const color = PIXI.BaseTexture.fromImage(colorImage);
 
 export class AssetManager {
 
-    private textures: PIXI.Texture[][];
+private textures: {[key: string]: PIXI.Texture[]};
 
     public constructor() {
         const {texWidth, texHeight} = Settings;
         
-        this.textures = [
-            new Array(texWidth),
-            new Array(texWidth),
-            new Array(texWidth),
-            new Array(texWidth),
-            new Array(texWidth),
-            new Array(texWidth),
-            new Array(texWidth),
-            new Array(texWidth),
-        ];
+        this.textures = {
+            "#": new Array(texWidth),
+            "+": Array(texWidth),
+            //" ": Array(texWidth),
+            //".": new Array(texWidth),
+            "!": new Array(texWidth),    
+        };
 
         for (let step = 0; step < texWidth; step++) {
-            this.textures[0][step] = new PIXI.Texture(eagle, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[1][step] = new PIXI.Texture(brick, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[2][step] = new PIXI.Texture(purpstone, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[3][step] = new PIXI.Texture(grey, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[4][step] = new PIXI.Texture(blue, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[5][step] = new PIXI.Texture(mossy, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[6][step] = new PIXI.Texture(wood, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[7][step] = new PIXI.Texture(color, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures["#"][step] = new PIXI.Texture(brick, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures["+"][step] = new PIXI.Texture(wood, new PIXI.Rectangle(step, 0, 1, texHeight));
+            //this.textures[" "][step] = new PIXI.Texture(purpstone, new PIXI.Rectangle(step, 0, 1, texHeight));
+            //this.textures["."][step] = new PIXI.Texture(grey, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures["!"][step] = new PIXI.Texture(mossy, new PIXI.Rectangle(step, 0, 1, texHeight));
         }
     }
 
-    public getTextures(): PIXI.Texture[][] {
-        return this.textures;
+    public getTexturesForKey(k: string): PIXI.Texture[] {
+        return this.textures[k];
     }
-
 }

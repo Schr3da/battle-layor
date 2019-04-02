@@ -47,9 +47,7 @@ export class Game {
 		if ((this.map || []).length === 0) {
 			return;
 		}
-		this.animationFrameHandler = requestAnimationFrame(this.render);
-		this.renderer.render()
-
+        this.renderer.render()
 	}
 
 	private update = () => {
@@ -75,7 +73,7 @@ export class Game {
 		switch (d.resource) {
 			case WSResource.MAP:
 				this.map = d.data;
-				this.player = new Player(2, 2, this.map, this.controls);
+				this.player = new Player(20, 20, this.map, this.controls);
 			default:
 				console.log(d);
 		}
