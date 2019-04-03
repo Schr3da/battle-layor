@@ -110,7 +110,11 @@ func generateTiles() [MapTilesY][MapTilesX]string {
 		generateRoom(j == 0, seed, &tiles)
 	}
 
-	fmt.Println(tiles)
+	fmt.Println("\n\nGENERATED MAP: ", MapTilesX, "x", MapTilesY, "\n\n ")
+	for k := 0; k < len(tiles); k++ {
+		fmt.Println(tiles[k])
+	}
+
 	return tiles
 }
 
