@@ -6,6 +6,7 @@ import { Controls } from "./Controls";
 import { Settings } from "./../common/Settings";
 import { Player } from "./Player";
 import { updateView } from "./Renderer";
+import { TMap } from "../common/MapUtils";
 
 export class Game {
 
@@ -15,7 +16,7 @@ export class Game {
 	private assets: AssetManager;
 	private scene: PIXI.Container;
 	private controls: Controls;
-	private map: number[];
+    private map: TMap;
 	private player: Player | null = null;
 
 	constructor(wrapper: Element) {

@@ -1,25 +1,38 @@
 import * as React from "react";
+import { TMap, receivedMapData } from "./../common/MapUtils";
 import { getGlobalState } from "./../common/AppState";
-import { WSResource, WSAction } from "./../common/WebSocketProvider";
+import { WSAction, IWSResponse } from "../common/WebSocketProvider";
+import { canWalkOver } from "../common/MapUtils";
 
 export class MiniMapWrapper extends React.Component {
    
     private canvasRef: HTMLCanvasElement | null = null;
 
-    private onReceivedData = (data: any) => {
-        if (data == null || data.action !== WSAction.GAME || data.resource !== WSResource.MAP) {
-            return null;
+    private onReceivedData = (data: IWSResponse<any>) => {
+        if (receivedMapData(data) === false) {    
+            return;
         }
-        
-        this.redraw(); 
+        this.redraw(data.data); 
     }
 
-    private redraw() {
-        if (this.canvasRef == null) {
+    private redraw(data: TMap) {
+        if (this.canvasRef == null ) {
             return
         }
+        const context = this.canvasRef.getContext('2d') as CanvasRenderingContext2D;    
+        const size = 2;
 
-        console.log("add drawing code here");
+        (data || []).forEach((d, y) => {
+            (d || []).forEach((v, x) => { 
+                const color = canWalkOver(v) ? "transparent" : "gray",
+                offsetX = x * size,
+                offsetY = y * size;
+
+                context.fillStyle = color;
+                context.fillRect(offsetX, offsetY, size, size);
+                context.fill();
+            });
+        });
     }
 
     public componentDidMount() {

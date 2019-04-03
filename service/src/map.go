@@ -12,7 +12,7 @@ const (
 	//MapTilesY max tiles along y axis
 	MapTilesY int    = 60
 	wall      string = "#"
-	door      string = "+"
+	door      string = "."
 	free      string = " "
 	floor     string = "."
 	corner    string = "!"

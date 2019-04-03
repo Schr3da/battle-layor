@@ -1,18 +1,17 @@
 import { Entity } from "./../common/Entity";
 import { Controls, SupportedKeys } from "./Controls";
-
-export const canWalkOver = (value: string) => value === " " || value === ".";
+import { canWalkOver, TMap } from "../common/MapUtils";
 
 export class Player extends Entity {
 
-    private map: any[];
+    private map: TMap;
     private controls: Controls;
     private moveSpeed: number = 0;
     private rotSpeed: number = 0;
     private prevDirX: number = 0;
     private prevPlaneX: number = 0;
 
-    public constructor(x: number, y: number, map: any, controls: Controls) {
+    public constructor(x: number, y: number, map: TMap, controls: Controls) {
         super(x, y);
         this.map = map;
         this.controls = controls

@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Settings } from "./../common/Settings";
+import { MapStructure } from "./../common/MapUtils";
 
 declare var require: any;
 
@@ -29,23 +30,23 @@ private textures: {[key: string]: PIXI.Texture[]};
         const {texWidth, texHeight} = Settings;
         
         this.textures = {
-            "#": new Array(texWidth),
-            "+": Array(texWidth),
+            [MapStructure.wall]: new Array(texWidth),
+            [MapStructure.door]: Array(texWidth),
+            [MapStructure.corner]: new Array(texWidth),    
             //" ": Array(texWidth),
             //".": new Array(texWidth),
-            "!": new Array(texWidth),    
         };
 
         for (let step = 0; step < texWidth; step++) {
-            this.textures["#"][step] = new PIXI.Texture(brick, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures["+"][step] = new PIXI.Texture(wood, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures[MapStructure.wall][step] = new PIXI.Texture(brick, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures[MapStructure.door][step] = new PIXI.Texture(wood, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures[MapStructure.corner][step] = new PIXI.Texture(mossy, new PIXI.Rectangle(step, 0, 1, texHeight));
             //this.textures[" "][step] = new PIXI.Texture(purpstone, new PIXI.Rectangle(step, 0, 1, texHeight));
             //this.textures["."][step] = new PIXI.Texture(grey, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures["!"][step] = new PIXI.Texture(mossy, new PIXI.Rectangle(step, 0, 1, texHeight));
         }
     }
 
-    public getTexturesForKey(k: string): PIXI.Texture[] {
+    public getTexturesForKey(k: MapStructure): PIXI.Texture[] {
         return this.textures[k];
     }
 }

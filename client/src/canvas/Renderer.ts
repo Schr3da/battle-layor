@@ -1,6 +1,7 @@
 import { Entity } from "../common/Entity";
 import { AssetManager } from "./AssetManager";
 import { Settings } from "../common/Settings";
+import { canWalkOver } from "../common/MapUtils";
 
 const spriteSorter = (a: any, b: any) => {
     let posX: any;
@@ -74,8 +75,7 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
             }
 
             const value = map[Math.round(mapX)][Math.round(mapY)]; 
-      
-            if (value != null && (value === "#" || value === "!" || value === "+")) {
+            if (canWalkOver(value) === false) {
                 hit = 1;
             }
         }

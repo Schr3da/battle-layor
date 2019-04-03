@@ -56,8 +56,8 @@ export class WebSocketProvider {
         if (m == null || m.data == null ||  isJson(m.data) === false) {
             return;
         }
-        
-        const data = JSON.parse(m.data);
+ 
+        const data = JSON.parse(m.data) as IWSResponse<any>;
         this.config.onReceive(data);
     } 
 

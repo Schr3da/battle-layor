@@ -90,7 +90,6 @@ class GlobalState {
             this.provider.destroy();
             this.provider = null;
         }
-
     }
    
 }
