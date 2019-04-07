@@ -2,8 +2,8 @@ export const Settings = {
     fps: 60,
     resolution: 640 / 10,
 	refreshTime: 1000/60,
-    displayWidth: window.innerWidth,
-    displayHeight: window.innerHeight,
+    displayWidth: 640,
+    displayHeight: 480,
     texWidth: 64,
     texHeight: 64    
 }

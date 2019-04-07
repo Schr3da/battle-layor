@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"encoding/hex"
 	"errors"
+	"time"
 )
 
 //PlayerMode Supporte modes for an Player
@@ -39,7 +40,8 @@ func generateID(s string) (string, error) {
 		return "", err
 	}
 
-	return hex.EncodeToString(hash.Sum(nil)), nil
+	value := []byte(s + time.Millisecond.String())
+	return hex.EncodeToString(hash.Sum(value)), nil
 }
 
 //NewPlayer Create a new Player based on provided name and position

@@ -22,47 +22,51 @@ const spriteSorter = (a: any, b: any) => {
 }
 
 const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetManager) => {
-
-    let  rayIdx, cameraX, rayPosX, rayPosY, rayDirX, rayDirY, mapX, mapY, 
-    sideDistX, sideDistY, deltaDistX, deltaDistY, perpWallDist, stepX,
-    stepY, hit, side, lineHeight, drawStart, drawEnd; 
-
+    
     const zBuffer = [],
     shadowDepth = 12,
     position = e.getPosition(),
     direction = e.getDirection(),
     plane = e.getPlane();
 
-    for (rayIdx = 0; rayIdx < Settings.displayWidth; rayIdx++) {
-        cameraX = 2 * rayIdx / Settings.displayWidth - 1;
-        rayPosX = position.x;
-        rayPosY = position.y;
-        rayDirX = direction.x + plane.x * cameraX;
-        rayDirY = direction.y + plane.y * cameraX;
-        
-        mapX = Math.floor(rayPosX);
-        mapY = Math.floor(rayPosY);
+    let rayIdx = 0;
+    let perpWallDist = 0;
     
-        deltaDistX = Math.sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX));
-        deltaDistY = Math.sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY));
-                           
-        hit = 0;
-        if (rayDirX < 0) {
+    for (rayIdx = 0; rayIdx < Settings.displayWidth; rayIdx++) {
+        const playerX = 2 * rayIdx / Settings.displayWidth - 1,
+        rayPositionX = position.x,
+        rayPositionY = position.y,
+        rayDirectionX = direction.x + plane.x * playerX,
+        rayDirectionY = direction.y + plane.y * playerX,
+        deltaDistX = Math.sqrt(1 + (rayDirectionY* rayDirectionY) / (rayDirectionX * rayDirectionX)),
+        deltaDistY = Math.sqrt(1 + (rayDirectionX * rayDirectionX) / (rayDirectionY * rayDirectionY));
+        
+        let hit = 0,
+        stepX = 0,
+        sideDistX = 0,
+        mapX = Math.floor(rayPositionX),
+        mapY = Math.floor(rayPositionY);
+
+        if (rayDirectionX < 0) {
             stepX = -1;
-            sideDistX = (rayPosX - mapX) * deltaDistX;
+            sideDistX = (rayPositionX - mapX) * deltaDistX;
         } else {
             stepX = 1;
-            sideDistX = (mapX + 1 - rayPosX) * deltaDistX;
+            sideDistX = (mapX + 1 - rayPositionX) * deltaDistX;
         }
 
-        if (rayDirY < 0) {
+        let stepY = 0,
+        sideDistY = 0;
+
+        if (rayDirectionY< 0) {
             stepY = -1;
-            sideDistY = (rayPosY - mapY) * deltaDistY;
+            sideDistY = (rayPositionY - mapY) * deltaDistY;
         } else {
             stepY = 1;
-            sideDistY = (mapY + 1 - rayPosY) * deltaDistY;
+            sideDistY = (mapY + 1 - rayPositionY) * deltaDistY;
         }
 
+        let side = 0; 
         while (hit == 0) {
             if (sideDistX < sideDistY) {
                 sideDistX += deltaDistX;
@@ -79,34 +83,33 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
                 hit = 1;
             }
         }
-        
+
         if (side == 0) {
-            perpWallDist = Math.abs((mapX - rayPosX + (1 - stepX) / 2) / rayDirX);
+            perpWallDist = Math.abs((mapX - rayPositionX + (1 - stepX) / 2) / rayDirectionX);
         } else {
-            perpWallDist = Math.abs((mapY - rayPosY + (1 - stepY) / 2) / rayDirY);
+            perpWallDist = Math.abs((mapY - rayPositionY + (1 - stepY) / 2) / rayDirectionY);
         }
         
-        lineHeight = Math.abs(Math.round(Settings.displayHeight / perpWallDist));
-        
-        drawStart = -lineHeight / 2 + Settings.displayHeight / 2;
+        const lineHeight = Math.abs(Math.round(Settings.displayHeight / perpWallDist)),
+        drawStart = -lineHeight / 2 + Settings.displayHeight / 2,
         drawEnd = lineHeight / 2 + Settings.displayHeight / 2;
 
         let wallX = 0;
         if (side == 1) {
-            wallX = rayPosX + ((mapY - rayPosY + (1 - stepY) / 2) / rayDirY) * rayDirX;
+            wallX = rayPositionX + ((mapY - rayPositionY + (1 - stepY) / 2) / rayDirectionY) * rayDirectionX;
         } else {
-            wallX = rayPosY + ((mapX - rayPosX + (1 - stepX) / 2) / rayDirX) * rayDirY;
+            wallX = rayPositionY + ((mapX - rayPositionX + (1 - stepX) / 2) / rayDirectionX) * rayDirectionY;
         }
         wallX -= Math.floor(wallX);
         
         let line = scene.getChildAt(rayIdx) as PIXI.Sprite;
         let texX = Math.floor(wallX * Settings.texWidth);
         
-        if (side == 0 && rayDirX > 0) {
+        if (side == 0 && rayDirectionX > 0) {
             texX = Settings.texWidth - texX - 1;
         }
         
-        if (side == 1 && rayDirY < 0) {
+        if (side == 1 && rayDirectionY < 0) {
             texX = Settings.texWidth - texX - 1;
         }
     
@@ -132,7 +135,6 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
     }
 
     (zBuffer as any)[rayIdx] = perpWallDist;
-    
     scene.children.sort(spriteSorter); 
 }
 
