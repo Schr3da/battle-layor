@@ -5,7 +5,9 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"time"
 )
 
 //Response Basic Response type
@@ -37,6 +39,8 @@ const (
 	ActionUI WSAction = 0
 	//ActionGame Action based on Game
 	ActionGame WSAction = 1
+	//ActionConnection Check websocket connection
+	ActionConnection WSAction = 2
 )
 
 //WSResource General Websocket Resource type
@@ -49,6 +53,8 @@ const (
 	ResourcePlayer WSResource = 1
 	//ResourceStats Request stats state
 	ResourceStats WSResource = 2
+	//ResourceConnection Client connection health check state
+	ResourceConnection WSResource = 3
 )
 
 //NewErrorResponse Default error response
@@ -145,4 +151,20 @@ func IsStringEmpty(s string) (bool, error) {
 		return true, err
 	}
 	return false, nil
+}
+
+//NewError Creates a new Error
+func NewError(s string) error {
+	return errors.New(s)
+}
+
+//PrintLog Print message to console
+func PrintLog(s string) {
+	log.Println(s)
+}
+
+//SetTimeout delays an function call
+func SetTimeout(someFunc func(), milliseconds int) {
+	timeout := time.Duration(milliseconds) * time.Millisecond
+	time.AfterFunc(timeout, someFunc)
 }

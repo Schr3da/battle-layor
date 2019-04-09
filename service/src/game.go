@@ -1,7 +1,5 @@
 package main
 
-import "errors"
-
 //Game Game
 type Game struct {
 	w       World
@@ -32,8 +30,9 @@ func (g *Game) addPlayerWithName(name string) (*string, error) {
 	}
 
 	id := player.getID()
+
 	if g.doesPlayerExist(id) {
-		err := errors.New("Player with same ID detected: name:" + name + "id: " + id)
+		err := NewError("Player with same ID detected: name:" + name + "id: " + id)
 		CatchError("addPlayerWithName", err)
 		return nil, err
 	}
@@ -43,8 +42,8 @@ func (g *Game) addPlayerWithName(name string) (*string, error) {
 }
 
 func (g *Game) removePlayerWithID(id string) {
-	if g.doesPlayerExist(id) {
+	if g.doesPlayerExist(id) == false {
 		return
 	}
-	g.players[id] = nil
+	delete(g.players, id)
 }

@@ -28,6 +28,7 @@ func NewWorld() World {
 	w := World{
 		tiles: generateTiles(),
 	}
+
 	return w
 }
 
@@ -110,10 +111,12 @@ func generateTiles() [MapTilesY][MapTilesX]string {
 		generateRoom(j == 0, seed, &tiles)
 	}
 
-	fmt.Println("\n\nGENERATED MAP: ", MapTilesX, "x", MapTilesY, "\n\n ")
+	fmt.Println("\n\n ")
+	PrintLog("New world successfully generated\n")
 	for k := 0; k < len(tiles); k++ {
 		fmt.Println(tiles[k])
 	}
+	fmt.Println("")
 
 	return tiles
 }

@@ -47,6 +47,7 @@ func registerPlayerHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	SendResponse(w, response)
+	PrintLog("Player registered: " + *id)
 }
 
 func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request) {
@@ -62,6 +63,9 @@ func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	GameInstance.removePlayerWithID(body.ID)
+	id := body.ID
+	GameInstance.removePlayerWithID(id)
+
+	PrintLog("Player unregistered: " + id)
 	SendResponse(w, nil)
 }

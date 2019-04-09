@@ -29,6 +29,11 @@ export class CanvasWrapper extends React.Component<{}, {}> {
         state.registerReceived(WSAction.GAME, this.onReceivedData);
     }
 
+    public componentWillUnmount() {
+        const state = getGlobalState();
+        state.destory();
+    }
+
     public render() {
         return <> 
             <div ref={(r) => this.wrapperRef = r} className="canvas-wrapper"></div>

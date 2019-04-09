@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"net/http"
 )
 
@@ -23,6 +22,16 @@ func NewHub() *Hub {
 	}
 }
 
+func (h *Hub) getClientByID(id string) *Client {
+	var c *Client
+	for c = range h.clients {
+		if c.id == id {
+			break
+		}
+	}
+	return c
+}
+
 func (h *Hub) run() {
 	for {
 		select {
@@ -31,15 +40,16 @@ func (h *Hub) run() {
 			onEntered(client)
 		case client := <-h.unregister:
 			if _, ok := h.clients[client]; ok {
+				onLeave(client)
 				delete(h.clients, client)
 				close(client.send)
-				onLeave(client)
 			}
 		case message := <-h.broadcast:
 			for client := range h.clients {
 				select {
 				case client.send <- message:
 				default:
+					onLeave(client)
 					close(client.send)
 					delete(h.clients, client)
 				}
@@ -59,16 +69,19 @@ func onEntered(c *Client) {
 	if err = c.conn.WriteMessage(mt, resData); err != nil {
 		CatchError("write", err)
 	}
+
+	PrintLog("Client connected: " + c.getID())
 }
 
 func onLeave(c *Client) {
-	_, _, err := c.conn.ReadMessage()
-	if err != nil {
-		CatchError("read:", err)
+	if c == nil {
+		CatchError("onLeave", NewError("Client is nil"))
 		return
 	}
 
-	GameInstance.removePlayerWithID("Not done")
+	id := c.getID()
+	PrintLog("Client disconnected: " + id)
+	GameInstance.removePlayerWithID(id)
 }
 
 func handleMessage(data []byte) ([]byte, error) {
@@ -83,6 +96,6 @@ func handleMessage(data []byte) ([]byte, error) {
 		data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceMap, GameInstance.w.tiles)
 		return data, nil
 	default:
-		return nil, errors.New("Unknown resource request")
+		return nil, NewError("Unknown resource request")
 	}
 }

@@ -29,6 +29,7 @@ export type OnOpenCb = () => void;
 export type OnReceiveCb = <T>(data: IWSResponse<T>) => void;
 
 export interface IWebSocketProviderConfig {
+    id: string | null;
     onOpen: OnOpenCb;
     onReceive: OnReceiveCb;
 }
@@ -41,7 +42,7 @@ export class WebSocketProvider {
     constructor(config: IWebSocketProviderConfig) {
         this.config = config;
 
-        this.ws = new WebSocket("ws://" + getHost()+ "/socket");
+        this.ws = new WebSocket("ws://" + getHost()+ "/socket?id=" + config.id);
         this.ws.onopen = this.onOpen as any; 
         this.ws.onmessage = this.onReceived as any;
         this.ws.onclose = this.onClose as any;

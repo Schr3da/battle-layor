@@ -27,6 +27,7 @@ class GlobalState {
     };
 
     private getDefaultConfig = (): IWebSocketProviderConfig => ({
+        id: this.getId(),
         onOpen: this.onSocketOpened,
         onReceive: this.onSocketDataReceived,
     });
