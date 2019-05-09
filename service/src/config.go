@@ -6,7 +6,7 @@ import (
 )
 
 //Host used host
-var Host = flag.String("host", "localhost:", "Host or Url to use")
+var Host = flag.String("host", "0.0.0.0", "Host or Url to use")
 
 //Port used port
 var Port = flag.String("port", "8080", "Port to use")

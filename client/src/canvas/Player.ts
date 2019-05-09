@@ -1,6 +1,7 @@
 import { Entity } from "./../common/Entity";
 import { Controls, SupportedKeys } from "./Controls";
 import { canWalkOver, TMap } from "../common/MapUtils";
+import { getGlobalState } from "../common/AppState";
 
 export class Player extends Entity {
 
@@ -17,20 +18,33 @@ export class Player extends Entity {
         this.controls = controls
     }
 
+	private sendUpdate(willSend: boolean) {
+		if (willSend === false) {
+			return;
+		}
+		
+		const state = getGlobalState();
+		state.onSendPlayerData(this.direction, this.plane, this.position);
+	}
+
     public update(dt: number) {
-        this.moveSpeed = dt * 5;
+    	let willUpdate: boolean = false;
+    
+    	this.moveSpeed = dt * 5;
         this.rotSpeed = dt * 3;
         
         if (this.controls.getStateForKey(SupportedKeys.Up)) {    
             
             const xValue = this.map[Math.floor(this.position.x + this.direction.x * this.moveSpeed * 4)][Math.floor(this.position.y)];  
             if (canWalkOver(xValue)) {
+            	willUpdate = true;
                 this.position.x += this.direction.x * this.moveSpeed;
             }
 
             const yValue = this.map[Math.floor(this.position.x)][Math.floor(this.position.y + this.direction.y * this.moveSpeed * 4)]; 
             if (canWalkOver(yValue)) {
-                this.position.y += this.direction.y * this.moveSpeed;
+            	willUpdate = true;
+            	this.position.y += this.direction.y * this.moveSpeed;
             }
         }
 
@@ -38,11 +52,13 @@ export class Player extends Entity {
             
             const xValue = this.map[Math.floor(this.position.x - this.direction.x * this.moveSpeed * 4)][Math.floor(this.position.y)];  
             if (canWalkOver(xValue)) {
+            	willUpdate = true;
                 this.position.x -= this.direction.x * this.moveSpeed;
             }
 
             const yValue = this.map[Math.floor(this.position.x)][Math.floor(this.position.y - this.direction.y * this.moveSpeed * 4)];  
             if (canWalkOver(yValue)) {
+            	willUpdate = true;
                 this.position.y -= this.direction.y * this.moveSpeed;
             }
         }
@@ -64,7 +80,8 @@ export class Player extends Entity {
             this.plane.x = this.plane.x * Math.cos(this.rotSpeed) - this.plane.y * Math.sin(this.rotSpeed);
             this.plane.y = this.prevPlaneX * Math.sin(this.rotSpeed) + this.plane.y * Math.cos(this.rotSpeed);
         }   
-        
+    	
+    	this.sendUpdate(willUpdate);	
     }
 
 }

@@ -64,7 +64,9 @@ func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	id := body.ID
-	GameInstance.removePlayerWithID(id)
+	if c := HubInstance.getClientByID(id); c != nil {
+		HubInstance.unregister <- c
+	}
 
 	PrintLog("Player unregistered: " + id)
 	SendResponse(w, nil)

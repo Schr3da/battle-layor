@@ -7,6 +7,8 @@ import (
 )
 
 var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
@@ -14,16 +16,10 @@ var upgrader = websocket.Upgrader{
 
 //InitWSHandler setup of handler and route
 func InitWSHandler() {
-
-	var hub = NewHub()
-	go hub.run()
-
-	http.HandleFunc("/socket", func(w http.ResponseWriter, r *http.Request) {
-		handleConnection(w, r, hub)
-	})
+	http.HandleFunc("/socket", handleConnection)
 }
 
-func handleConnection(w http.ResponseWriter, r *http.Request, hub *Hub) {
+func handleConnection(w http.ResponseWriter, r *http.Request) {
 	query, err := url.ParseQuery(r.URL.RawQuery)
 
 	if err != nil {
@@ -37,7 +33,7 @@ func handleConnection(w http.ResponseWriter, r *http.Request, hub *Hub) {
 		return
 	}
 
-	if GameInstance.doesPlayerExist(clientID) == false || hub.getClientByID(clientID) != nil {
+	if GameInstance.doesPlayerExist(clientID) == false || HubInstance.getClientByID(clientID) != nil {
 		CatchError("handleConnection", NewError("Player already exists"))
 		return
 	}
@@ -49,9 +45,10 @@ func handleConnection(w http.ResponseWriter, r *http.Request, hub *Hub) {
 		return
 	}
 
-	client := &Client{id: clientID, hub: hub, conn: conn, send: make(chan []byte, 256)}
-	client.hub.register <- client
+	client := &Client{id: clientID, hub: HubInstance, conn: conn, send: make(chan []byte, 1024)}
+	HubInstance.register <- client
 
 	go client.read()
 	go client.write()
+
 }

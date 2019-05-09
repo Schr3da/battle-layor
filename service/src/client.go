@@ -9,7 +9,7 @@ const (
 	writeWait      = 10 * time.Second
 	pongWait       = 60 * time.Second
 	pingPeriod     = (pongWait * 9) / 10
-	maxMessageSize = 512
+	maxMessageSize = 2048
 )
 
 //Client Websocket client connection
@@ -25,7 +25,6 @@ func (c *Client) getID() string {
 }
 
 func (c *Client) read() {
-
 	defer func() {
 		c.hub.unregister <- c
 		c.conn.Close()
@@ -34,16 +33,14 @@ func (c *Client) read() {
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
-
 	for {
-		_, message, err := c.conn.ReadMessage()
+		var err error
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				CatchError("error: ", err)
 			}
 			break
 		}
-		c.hub.broadcast <- message
 	}
 }
 
@@ -70,6 +67,11 @@ func (c *Client) write() {
 				return
 			}
 			w.Write(message)
+
+			n := len(c.send)
+			for i := 0; i < n; i++ {
+				w.Write(<-c.send)
+			}
 
 			if err := w.Close(); err != nil {
 				return

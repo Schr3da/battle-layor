@@ -6,8 +6,9 @@ import { MiniMapWrapper } from "./canvas/MiniMapWrapper";
 import { UserInterfaceWrapper } from "./ui/UserInterfaceWrapper";
 
 class App extends React.Component<{}, {}> {
-    public render() {
-        return <>
+  
+  public render() {
+    return <>
             <UserInterfaceWrapper/>
             <CanvasWrapper />
             <MiniMapWrapper />
@@ -20,4 +21,3 @@ container.setAttribute("class", "app-wrapper");
 document.body.appendChild(container);
 
 ReactDOM.render(<App/>, container);
-

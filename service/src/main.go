@@ -13,5 +13,5 @@ func main() {
 	InitWSHandler()
 	InitRestHandler()
 	InitStaticHandler()
-	log.Fatal(http.ListenAndServe(*Host+*Port, nil))
+	log.Fatal(http.ListenAndServe(*Host+":"+*Port, nil))
 }

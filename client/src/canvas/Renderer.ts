@@ -77,7 +77,7 @@ const drawWalls = (scene: PIXI.Container, e: Entity, map: any[], assets: AssetMa
                 mapY += stepY;
                 side = 1;
             }
-
+						
             const value = map[Math.round(mapX)][Math.round(mapY)]; 
             if (canWalkOver(value) === false) {
                 hit = 1;

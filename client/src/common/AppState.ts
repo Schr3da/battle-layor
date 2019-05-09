@@ -1,4 +1,5 @@
-import { WebSocketProvider, IWebSocketProviderConfig, IWSRequest, IWSResponse, OnReceiveCb, OnOpenCb, WSAction, WSResource} from "./WebSocketProvider";
+import { WebSocketProvider, IWebSocketProviderConfig, IWSRequest, IWSResponse, OnReceiveCb, OnOpenCb, WSAction, WSResource } from "./WebSocketProvider";
+import { IVector2d } from "./../common//Entity";
 
 export interface IonOpenedObserverCb {
     [WSAction.UI]: OnOpenCb[];
@@ -39,7 +40,15 @@ class GlobalState {
         this.socketOpenedCb[WSAction.UI].forEach((cb) => cb()); 
         this.socketOpenedCb[WSAction.GAME].forEach((cb) => cb());     
     }
-    
+
+		public onSendPlayerData = (direction: IVector2d, plane: IVector2d, position: IVector2d) => {
+			this.sendData({
+				resource: WSResource.PLAYER,
+				action: WSAction.GAME,
+				data: { position, direction, plane },
+			})
+		}
+
     private onSocketDataReceived = <T>(data: IWSResponse<T>) => {
         if (data == null || data.action == null) {
             return;
@@ -47,7 +56,7 @@ class GlobalState {
         this.socketDataReceivedCb[data.action].forEach((cb) => cb(data))
     }
 
-    public setId(id: string) {
+    public setId(id: string | null) {
         this.id = id;
     }
 
@@ -56,7 +65,7 @@ class GlobalState {
     }
 
     public registerOpened(type: WSAction, cb: OnOpenCb) {
-        this.socketOpenedCb[type].push(cb);
+      this.socketOpenedCb[type].push(cb);
     }
 
     public registerReceived(type: WSAction, cb: OnReceiveCb) {
@@ -81,13 +90,20 @@ class GlobalState {
         this.provider = new WebSocketProvider(config);
     }
  
+		public endGame() {
+			if (this.provider != null) {
+				this.provider.destroy();
+			}
+			this.setId(null)
+		}
+
     public destroy() {
         this.socketOpenedCb[WSAction.UI] = [];
         this.socketOpenedCb[WSAction.GAME] = [];
         this.socketDataReceivedCb[WSAction.UI] = [];
         this.socketDataReceivedCb[WSAction.GAME] = [];
 
-        if(this.provider != null) {
+      	if(this.provider != null) {
             this.provider.destroy();
             this.provider = null;
         }
@@ -99,5 +115,5 @@ export const getGlobalState = () => {
     if ((window as any).state == null) {
         (window as any).state = new GlobalState();
     }
-    return (window as any).state;
+    return (window as any).state as GlobalState;
 }

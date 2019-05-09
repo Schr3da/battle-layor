@@ -63,7 +63,8 @@ export class WebSocketProvider {
     } 
 
     public onSend<T>(data: T) {
-        try {
+      	console.log((data as any).data);
+      	try {
             const d = JSON.stringify(data);
             this.ws.send(d);    
         } catch {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -111,13 +110,14 @@ func generateTiles() [MapTilesY][MapTilesX]string {
 		generateRoom(j == 0, seed, &tiles)
 	}
 
-	fmt.Println("\n\n ")
-	PrintLog("New world successfully generated\n")
-	for k := 0; k < len(tiles); k++ {
-		fmt.Println(tiles[k])
-	}
-	fmt.Println("")
-
+	/*
+		fmt.Println("\n\n ")
+		PrintLog("New world successfully generated\n")
+		for k := 0; k < len(tiles); k++ {
+			fmt.Println(tiles[k])
+		}
+		fmt.Println("")
+	*/
 	return tiles
 }
 

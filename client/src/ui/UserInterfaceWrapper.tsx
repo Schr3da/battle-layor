@@ -56,15 +56,16 @@ export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperP
         if (d == null) {
             return;
         }
-
-        const state = getGlobalState();
+      
+     	 	const state = getGlobalState();
         state.setId(d.data.id);
         state.newGame();
     }
 
     private handleUnregister = async () => {
         const state = getGlobalState();
-        await unregisterPlayer(state.getId());
+      	await unregisterPlayer(state.getId());
+				state.endGame();
     }
 
     public render() {

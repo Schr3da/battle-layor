@@ -31,7 +31,7 @@ export class CanvasWrapper extends React.Component<{}, {}> {
 
     public componentWillUnmount() {
         const state = getGlobalState();
-        state.destory();
+        state.destroy();
     }
 
     public render() {

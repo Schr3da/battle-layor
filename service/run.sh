@@ -15,6 +15,6 @@ npm run build-debug
 cd ../service
 cp -r ../client/$dir/debug ./$dir/public
 
-go build -gcflags='-N -l' -o ./$dir/debug ./src/* 
+go build -race -gcflags='-N -l' -o ./$dir/debug ./src/* 
 cd ./dist/
 ./debug
