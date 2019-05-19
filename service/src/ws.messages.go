@@ -52,6 +52,13 @@ type WSBroadcast struct {
 	id   string
 }
 
+//WSPlayerData Player structure which is communicated over ws
+type WSPlayerData struct {
+	direction Vector2d `json:"direction"`
+	position  Vector2d `json:"position"`
+	plane     Vector2d `json:"plane"`
+}
+
 //NewWSResponse Create a new websocket json response object
 func NewWSResponse(status int, action WSAction, resource WSResource, data interface{}) []byte {
 	d, err := json.Marshal(WSResponse{

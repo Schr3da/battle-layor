@@ -10,8 +10,8 @@ const (
 	GameAddNewPlayer GRAction = 1
 	//GameRemovePlayer GRAction to remove a player from game
 	GameRemovePlayer GRAction = 2
-	//GameUpdatePlayerPosition GRAction to update player position
-	GameUpdatePlayerPosition = 3
+	//GameUpdatePlayer GRAction to update player position
+	GameUpdatePlayer = 3
 )
 
 //GameHasPlayerSender Basic Model for GameHasPlayerSender
@@ -31,24 +31,33 @@ func PlayerExistsMessage(id string, receiver chan bool) GameHasPlayerSender {
 //GameSender Basic Model for GameSender
 type GameSender struct {
 	action GRAction
-	data   *string
+	data   []byte
 	id     string
 }
 
-//AddPlayerMessage Create New AddPlayerMessage
+//AddPlayerMessage Creates AddPlayerMessage consumed by game send channel
 func AddPlayerMessage(id string, name string) GameSender {
 	return GameSender{
 		action: GameAddNewPlayer,
-		data:   &name,
+		data:   []byte(name),
 		id:     id,
 	}
 }
 
-//RemovePlayerMessage Create New RemovePlayerMessage For Send Channel
+//RemovePlayerMessage Creates RemovePlayerMessage consumed by game send channel
 func RemovePlayerMessage(id string) GameSender {
 	return GameSender{
 		action: GameRemovePlayer,
 		data:   nil,
+		id:     id,
+	}
+}
+
+//UpdatePlayerMessage Creates UpdatePlayerMessage consumed by game send channel
+func UpdatePlayerMessage(id string, data []byte) GameSender {
+	return GameSender{
+		action: GameUpdatePlayer,
+		data:   data,
 		id:     id,
 	}
 }

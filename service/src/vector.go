@@ -4,8 +4,8 @@ import "math"
 
 //Vector2d Basic 2d Vector struct
 type Vector2d struct {
-	x float64
-	y float64
+	x float64 `json:"x"`
+	y float64 `json:"y"`
 }
 
 //NewVector2d Create 2d vector

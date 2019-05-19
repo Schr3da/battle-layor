@@ -16,15 +16,6 @@ const (
 	ACTOR PlayerMode = 1
 )
 
-//Player Player
-type Player struct {
-	id        string
-	health    int
-	direction float32
-	mode      PlayerMode
-	position  Vector2d
-}
-
 //GeneratePlayerID Generate a randomized id based on the user name
 func GeneratePlayerID(s string) (string, error) {
 	if len(s) == 0 {
@@ -44,14 +35,25 @@ func GeneratePlayerID(s string) (string, error) {
 	return hex.EncodeToString(hash.Sum(value)), nil
 }
 
+//Player Player
+type Player struct {
+	WSPlayerData
+	id     string
+	health int
+	mode   PlayerMode
+}
+
 //NewPlayer Create a new Player based on provided name and position
 func NewPlayer(id string, name string, position Vector2d) Player {
 	p := Player{
-		id:        id,
-		health:    100,
-		direction: 0.0,
-		mode:      SPECTATOR,
-		position:  position,
+		WSPlayerData: WSPlayerData{
+			direction: Zero(),
+			position:  position,
+			plane:     Zero(),
+		},
+		mode:   SPECTATOR,
+		id:     id,
+		health: 100,
 	}
 	return p
 }
@@ -64,15 +66,24 @@ func (p *Player) setHealth(value int) {
 	p.health = value
 }
 
-func (p *Player) setDirection(value float32) {
-	p.direction = value
+func (p *Player) setDirection(v Vector2d) {
+	p.direction = v
 }
 
-func (p *Player) setPosition(x float64, y float64) {
-	p.position.x = x
-	p.position.y = y
+func (p *Player) setPosition(v Vector2d) {
+	p.position = v
+}
+
+func (p *Player) setPlane(v Vector2d) {
+	p.plane = v
 }
 
 func (p *Player) setMode(m PlayerMode) {
 	p.mode = m
+}
+
+func (p *Player) update(d WSPlayerData) {
+	p.setDirection(d.direction)
+	p.setPosition(d.position)
+	p.setPlane(d.plane)
 }

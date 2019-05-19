@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 //Hub General Client Manager
 type Hub struct {
 	gameInstance *Game
@@ -36,8 +34,17 @@ func (h *Hub) remove(c *Client) {
 	}
 }
 
-func (h *Hub) update(data WSBroadcast) {
-	fmt.Println(string(data.id))
+func (h *Hub) update(d WSBroadcast) {
+	var req WSRequest
+
+	if err := ReadBytes(d.data, &req); err != nil {
+		CatchError("Update Game for Broadcast not possible", err)
+		return
+	}
+
+	if data, err := DataToBytes(req.Data); err == nil {
+		h.gameInstance.send <- UpdatePlayerMessage(d.id, data)
+	}
 }
 
 func (h *Hub) run() {
@@ -53,7 +60,6 @@ func (h *Hub) run() {
 				select {
 				case client.send <- d:
 					h.update(d)
-				default:
 				}
 			}
 		}

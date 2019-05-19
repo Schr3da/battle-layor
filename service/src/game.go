@@ -27,7 +27,7 @@ func (g *Game) doesPlayerExist(id string) bool {
 	return ok
 }
 
-func (g *Game) addPlayerWithName(id string, name string) error {
+func (g *Game) addPlayer(id string, name string) error {
 	if g.doesPlayerExist(id) {
 		err := NewError("Player already exists")
 		CatchError("addPlayerWithName: ", err)
@@ -39,11 +39,27 @@ func (g *Game) addPlayerWithName(id string, name string) error {
 	return nil
 }
 
-func (g *Game) removePlayerWithID(id string) {
+func (g *Game) removePlayer(id string) {
 	if g.doesPlayerExist(id) == false {
 		return
 	}
 	delete(g.players, id)
+}
+
+func (g *Game) updatePlayer(id string, data []byte) {
+
+	var newState WSPlayerData
+	if err := ReadBytes(data, &newState); err != nil {
+		CatchError("updatePlayer", err)
+		return
+	}
+
+	if g.doesPlayerExist(id) == false {
+		return
+	}
+
+	player := g.players[id]
+	player.update(newState)
 }
 
 func (g *Game) run() {
@@ -56,10 +72,13 @@ func (g *Game) run() {
 		case r := <-g.hasPlayer:
 			r.receiver <- g.doesPlayerExist(r.id)
 		case r := <-g.send:
-			if r.action == GameAddNewPlayer {
-				g.addPlayerWithName(r.id, *r.data)
-			} else if r.action == GameRemovePlayer {
-				g.removePlayerWithID(r.id)
+			switch r.action {
+			case GameAddNewPlayer:
+				g.addPlayer(r.id, string(r.data))
+			case GameRemovePlayer:
+				g.removePlayer(r.id)
+			case GameUpdatePlayer:
+				g.updatePlayer(r.id, r.data)
 			}
 		}
 	}
