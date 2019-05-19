@@ -1,7 +1,6 @@
 package main
 
 import (
-	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -16,7 +15,6 @@ const (
 
 //Client Websocket client connection
 type Client struct {
-	sync.Mutex
 	id   string
 	hub  *Hub
 	conn *websocket.Conn
@@ -24,14 +22,10 @@ type Client struct {
 }
 
 func (c *Client) getID() string {
-	c.Lock()
-	defer c.Unlock()
 	return c.id
 }
 
 func (c *Client) close() {
-	c.Lock()
-	defer c.Unlock()
 	c.hub.unregister <- c
 	c.conn.Close()
 }

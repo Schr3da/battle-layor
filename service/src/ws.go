@@ -3,14 +3,12 @@ package main
 import (
 	"net/http"
 	"net/url"
-	"sync"
 
 	"github.com/gorilla/websocket"
 )
 
 //WSProvider WebSocket
 type WSProvider struct {
-	sync.Mutex
 	wsUpgrader   websocket.Upgrader
 	gameInstance *Game
 	hubInstance  Hub
@@ -49,15 +47,7 @@ func (p *WSProvider) start() {
 			return
 		}
 
-		p.gameInstance.Lock()
-		if DoesKeyExist(p.gameInstance.players, id) == false {
-			CatchError("handleConnection", NewError("Player already exists"))
-			return
-		}
-		p.gameInstance.Unlock()
-
-		p.Lock()
-		defer p.Unlock()
+		p.gameInstance.send <- PlayerExistsMessage(id)
 
 		connection, err := p.wsUpgrader.Upgrade(w, r, nil)
 		if err != nil {

@@ -12,9 +12,7 @@ func PrepareResponseMessage(g *Game, data []byte) ([]byte, error) {
 
 	switch d.Resource {
 	case ResourceMap:
-		g.Lock()
 		data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceMap, g.world)
-		g.Unlock()
 		return data, nil
 	case ResourcePlayer:
 		data := NewWSResponse(http.StatusAccepted, ActionGame, ResourcePlayer, d)

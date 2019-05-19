@@ -1,16 +1,10 @@
 package main
 
-import "sync"
-
-//DoesKeyExist Checks either a key is included or not within the map
-func DoesKeyExist(container map[string]Player, key string) bool {
-	_, ok := container[key]
-	return ok
-}
+import "fmt"
 
 //Game Game
 type Game struct {
-	sync.Mutex
+	send    chan GameSender
 	world   [MapTilesY][MapTilesX]string
 	players map[string]Player
 }
@@ -18,17 +12,23 @@ type Game struct {
 //NewGame Create a new Game instance
 func NewGame() Game {
 	g := Game{
+		send:    make(chan GameSender),
 		world:   GenerateMap(),
 		players: map[string]Player{},
 	}
+
+	go g.run()
+
 	return g
 }
 
-func (g *Game) addPlayerWithName(id string, name string) error {
-	g.Lock()
-	defer g.Unlock()
+func (g *Game) doesPlayerExist(id string) bool {
+	_, ok := g.players[id]
+	return ok
+}
 
-	if DoesKeyExist(g.players, id) {
+func (g *Game) addPlayerWithName(id string, name string) error {
+	if g.doesPlayerExist(id) {
 		err := NewError("Player already exists")
 		CatchError("addPlayerWithName: ", err)
 		return err
@@ -40,11 +40,29 @@ func (g *Game) addPlayerWithName(id string, name string) error {
 }
 
 func (g *Game) removePlayerWithID(id string) {
-	g.Lock()
-	defer g.Unlock()
-
-	if DoesKeyExist(g.players, id) == false {
+	if g.doesPlayerExist(id) == false {
 		return
 	}
 	delete(g.players, id)
+}
+
+func (g *Game) run() {
+	defer func() {
+		close(g.send)
+	}()
+
+	for {
+		select {
+		case r := <-g.send:
+
+			if r.action == GameDoesPlayerExist {
+				result := g.doesPlayerExist(r.id)
+				fmt.Println(result)
+			} else if r.action == GameAddNewPlayer {
+				g.addPlayerWithName(r.id, *r.data)
+			} else if r.action == GameRemovePlayer {
+				g.removePlayerWithID(r.id)
+			}
+		}
+	}
 }

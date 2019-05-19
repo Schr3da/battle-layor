@@ -1,12 +1,7 @@
 package main
 
-import (
-	"sync"
-)
-
 //Hub General Client Manager
 type Hub struct {
-	sync.Mutex
 	gameInstance *Game
 	clients      map[string]*Client
 	broadcast    chan []byte
@@ -35,11 +30,10 @@ func (h *Hub) run() {
 			if _, ok := h.clients[id]; ok == false {
 				return
 			}
-			h.gameInstance.removePlayerWithID(id)
+			h.gameInstance.send <- RemovePlayerMessage(id)
 			delete(h.clients, id)
 			close(c.send)
 		case message := <-h.broadcast:
-			PrintLog(string(message))
 			for _, client := range h.clients {
 				select {
 				case client.send <- message:

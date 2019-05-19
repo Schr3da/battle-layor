@@ -53,10 +53,14 @@ func registerPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) {
 		return
 	}
 
-	if err := g.addPlayerWithName(id, name); err != nil {
-		SendErrorResponse(w, err)
-		return
-	}
+	g.send <- AddPlayerMessage(id, name)
+
+	/*
+		if err := g.addPlayerWithName(id, name); err != nil {
+			SendErrorResponse(w, err)
+			return
+		}
+	*/
 
 	response := _RegisterPlayerResponse{
 		ID: id,
@@ -79,6 +83,6 @@ func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) 
 		return
 	}
 
-	g.removePlayerWithID(id)
+	g.send <- RemovePlayerMessage(id)
 	SendResponse(w, nil)
 }
