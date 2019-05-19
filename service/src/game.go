@@ -1,20 +1,20 @@
 package main
 
-import "fmt"
-
 //Game Game
 type Game struct {
-	send    chan GameSender
-	world   [MapTilesY][MapTilesX]string
-	players map[string]Player
+	hasPlayer chan GameHasPlayerSender
+	send      chan GameSender
+	world     [MapTilesY][MapTilesX]string
+	players   map[string]Player
 }
 
 //NewGame Create a new Game instance
 func NewGame() Game {
 	g := Game{
-		send:    make(chan GameSender),
-		world:   GenerateMap(),
-		players: map[string]Player{},
+		hasPlayer: make(chan GameHasPlayerSender),
+		send:      make(chan GameSender),
+		world:     GenerateMap(),
+		players:   map[string]Player{},
 	}
 
 	go g.run()
@@ -53,12 +53,10 @@ func (g *Game) run() {
 
 	for {
 		select {
+		case r := <-g.hasPlayer:
+			r.receiver <- g.doesPlayerExist(r.id)
 		case r := <-g.send:
-
-			if r.action == GameDoesPlayerExist {
-				result := g.doesPlayerExist(r.id)
-				fmt.Println(result)
-			} else if r.action == GameAddNewPlayer {
+			if r.action == GameAddNewPlayer {
 				g.addPlayerWithName(r.id, *r.data)
 			} else if r.action == GameRemovePlayer {
 				g.removePlayerWithID(r.id)

@@ -18,7 +18,7 @@ type Client struct {
 	id   string
 	hub  *Hub
 	conn *websocket.Conn
-	send chan []byte
+	send chan WSBroadcast
 }
 
 func (c *Client) getID() string {
@@ -45,6 +45,46 @@ func (c *Client) read() {
 			}
 			break
 		}
-		c.hub.broadcast <- message
+
+		c.hub.broadcast <- WSBroadcast{
+			id:   c.getID(),
+			data: message,
+		}
+	}
+}
+
+func (c *Client) write() {
+	ticker := time.NewTicker(pingPeriod)
+	defer func() {
+		ticker.Stop()
+		c.conn.Close()
+	}()
+
+	for {
+		select {
+		case data, ok := <-c.send:
+			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if !ok {
+				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				return
+			}
+
+			w, err := c.conn.NextWriter(websocket.TextMessage)
+			if err != nil {
+				return
+			}
+
+			resData, err := CreateWSResponse(nil, data.data)
+			if err != nil {
+				return
+			}
+
+			w.Write(resData)
+		case <-ticker.C:
+			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				return
+			}
+		}
 	}
 }

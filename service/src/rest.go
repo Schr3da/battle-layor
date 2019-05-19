@@ -53,20 +53,16 @@ func registerPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) {
 		return
 	}
 
-	g.send <- AddPlayerMessage(id, name)
+	var isExisting = make(chan bool)
+	g.hasPlayer <- PlayerExistsMessage(id, isExisting)
 
-	/*
-		if err := g.addPlayerWithName(id, name); err != nil {
-			SendErrorResponse(w, err)
-			return
-		}
-	*/
-
-	response := _RegisterPlayerResponse{
-		ID: id,
+	if r := <-isExisting; r == true {
+		SendErrorResponse(w, NewError("Player already exists"))
+		return
 	}
 
-	SendResponse(w, response)
+	g.send <- AddPlayerMessage(id, name)
+	SendResponse(w, _RegisterPlayerResponse{ID: id})
 }
 
 func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) {

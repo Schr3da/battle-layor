@@ -14,6 +14,20 @@ const (
 	GameUpdatePlayerPosition = 3
 )
 
+//GameHasPlayerSender Basic Model for GameHasPlayerSender
+type GameHasPlayerSender struct {
+	id       string
+	receiver chan bool
+}
+
+//PlayerExistsMessage Create New PlayerExistsMessage For Send Channel
+func PlayerExistsMessage(id string, receiver chan bool) GameHasPlayerSender {
+	return GameHasPlayerSender{
+		id:       id,
+		receiver: receiver,
+	}
+}
+
 //GameSender Basic Model for GameSender
 type GameSender struct {
 	action GRAction
@@ -34,15 +48,6 @@ func AddPlayerMessage(id string, name string) GameSender {
 func RemovePlayerMessage(id string) GameSender {
 	return GameSender{
 		action: GameRemovePlayer,
-		data:   nil,
-		id:     id,
-	}
-}
-
-//PlayerExistsMessage Create New PlayerExistsMessage For Send Channel
-func PlayerExistsMessage(id string) GameSender {
-	return GameSender{
-		action: GameDoesPlayerExist,
 		data:   nil,
 		id:     id,
 	}

@@ -47,7 +47,12 @@ func (p *WSProvider) start() {
 			return
 		}
 
-		p.gameInstance.send <- PlayerExistsMessage(id)
+		isExisting := make(chan bool)
+		p.gameInstance.hasPlayer <- PlayerExistsMessage(id, isExisting)
+		if r := <-isExisting; r == false {
+			CatchError("handleConnection", NewError("Player does not exist"))
+			return
+		}
 
 		connection, err := p.wsUpgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -56,7 +61,7 @@ func (p *WSProvider) start() {
 		}
 
 		mt, data, err := connection.ReadMessage()
-		resData, err := PrepareResponseMessage(p.gameInstance, data)
+		resData, err := CreateWSResponse(p.gameInstance, data)
 		if err = connection.WriteMessage(mt, resData); err != nil {
 			CatchError("NewPlayerRegistered ", err)
 		}
@@ -65,11 +70,12 @@ func (p *WSProvider) start() {
 			id:   id,
 			hub:  &p.hubInstance,
 			conn: connection,
-			send: make(chan []byte, 1024),
+			send: make(chan WSBroadcast),
 		}
 
 		p.hubInstance.register <- client
 
 		go client.read()
+		go client.write()
 	})
 }
