@@ -8,7 +8,7 @@ import { UserInterfaceWrapper } from "./ui/UserInterfaceWrapper";
 class App extends React.Component<{}, {}> {
   
   public render() {
-    return <>
+		return <>
             <UserInterfaceWrapper/>
             <CanvasWrapper />
             <MiniMapWrapper />

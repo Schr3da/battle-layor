@@ -1,48 +1,49 @@
 package main
 
+import "sync"
+
+//DoesKeyExist Checks either a key is included or not within the map
+func DoesKeyExist(container map[string]Player, key string) bool {
+	_, ok := container[key]
+	return ok
+}
+
 //Game Game
 type Game struct {
-	w       World
-	players map[string]*Player
+	sync.Mutex
+	world   [MapTilesY][MapTilesX]string
+	players map[string]Player
 }
 
 //NewGame Create a new Game instance
 func NewGame() Game {
 	g := Game{
-		w:       NewWorld(),
-		players: map[string]*Player{},
+		world:   GenerateMap(),
+		players: map[string]Player{},
 	}
 	return g
 }
 
-func (g *Game) getMap() [MapTilesY][MapTilesX]string {
-	return g.w.tiles
-}
+func (g *Game) addPlayerWithName(id string, name string) error {
+	g.Lock()
+	defer g.Unlock()
 
-func (g *Game) doesPlayerExist(id string) bool {
-	return g.players[id] != nil
-}
-
-func (g *Game) addPlayerWithName(name string) (*string, error) {
-	player, err := NewPlayer(name, g.w.pickRandomSpawnPlace())
-	if err != nil {
-		return nil, err
+	if DoesKeyExist(g.players, id) {
+		err := NewError("Player already exists")
+		CatchError("addPlayerWithName: ", err)
+		return err
 	}
 
-	id := player.getID()
-
-	if g.doesPlayerExist(id) {
-		err := NewError("Player with same ID detected: name:" + name + "id: " + id)
-		CatchError("addPlayerWithName", err)
-		return nil, err
-	}
-
+	player := NewPlayer(id, name, getRandomSpawnPlace(g.world))
 	g.players[id] = player
-	return &id, nil
+	return nil
 }
 
 func (g *Game) removePlayerWithID(id string) {
-	if g.doesPlayerExist(id) == false {
+	g.Lock()
+	defer g.Unlock()
+
+	if DoesKeyExist(g.players, id) == false {
 		return
 	}
 	delete(g.players, id)

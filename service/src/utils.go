@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"time"
 )
@@ -160,7 +161,16 @@ func NewError(s string) error {
 
 //PrintLog Print message to console
 func PrintLog(s string) {
+	if *LogsEnabled == false {
+		return
+	}
+
 	log.Println(s)
+}
+
+//GetRandomValue Returns a random number from a seed
+func GetRandomValue(min int, max int) int {
+	return rand.Intn(max-min) + min
 }
 
 //SetTimeout delays an function call

@@ -7,4 +7,4 @@ dir=dist
 mkdir -p ./$dir
 mkdir -p ./$dir/public
 
-go build -race -gcflags='-N -l' -o ./$dir/debug ./src/* 
+gow run -race -gcflags='-N -l' ./src/* -content="./dist/public/debug" 

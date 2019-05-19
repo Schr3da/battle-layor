@@ -17,20 +17,6 @@ const (
 	corner    string = "!"
 )
 
-//World Game World
-type World struct {
-	tiles [MapTilesY][MapTilesX]string
-}
-
-//NewWorld returns a new world instance
-func NewWorld() World {
-	w := World{
-		tiles: generateTiles(),
-	}
-
-	return w
-}
-
 func generateRoom(start bool, seed *rand.Rand, tiles *[MapTilesY][MapTilesX]string) {
 	width := seed.Intn(10) + 5
 	height := seed.Intn(6) + 3
@@ -94,7 +80,29 @@ func generateRoom(start bool, seed *rand.Rand, tiles *[MapTilesY][MapTilesX]stri
 	}
 }
 
-func generateTiles() [MapTilesY][MapTilesX]string {
+func isWalkable(tile string) bool {
+	return tile != wall && tile != free && tile != corner
+}
+
+func getRandomSpawnPlace(tiles [MapTilesY][MapTilesX]string) Vector2d {
+	rand.Seed(time.Now().Unix())
+
+	for {
+
+		var x = GetRandomValue(0, MapTilesX-1)
+		var y = GetRandomValue(0, MapTilesY-1)
+
+		if isWalkable(tiles[y][x]) {
+			return Vector2d{
+				x: float64(x),
+				y: float64(y),
+			}
+		}
+	}
+}
+
+//GenerateMap Generates a new map
+func GenerateMap() [MapTilesY][MapTilesX]string {
 	var tiles [MapTilesY][MapTilesX]string
 
 	for y := 0; y < MapTilesY; y++ {
@@ -109,21 +117,5 @@ func generateTiles() [MapTilesY][MapTilesX]string {
 	for j := 0; j < 1000; j++ {
 		generateRoom(j == 0, seed, &tiles)
 	}
-
-	/*
-		fmt.Println("\n\n ")
-		PrintLog("New world successfully generated\n")
-		for k := 0; k < len(tiles); k++ {
-			fmt.Println(tiles[k])
-		}
-		fmt.Println("")
-	*/
 	return tiles
-}
-
-func (w *World) pickRandomSpawnPlace() Vector2d {
-	return Vector2d{
-		x: 2,
-		y: 1,
-	}
 }

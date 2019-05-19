@@ -5,13 +5,28 @@ import (
 	"net/http"
 )
 
-//GameInstance Holding Game State
-var GameInstance Game = NewGame()
+//Server General server
+type Server struct {
+	gameInstance Game
+	wsInstance   WSProvider
+}
+
+func (s *Server) start() {
+	InitConfig()
+	InitStaticHandler()
+	InitRestHandler(&s.gameInstance)
+
+	s.wsInstance.start()
+	log.Fatal(http.ListenAndServe(*Host+":"+*Port, nil))
+}
 
 func main() {
-	InitConfig()
-	InitWSHandler()
-	InitRestHandler()
-	InitStaticHandler()
-	log.Fatal(http.ListenAndServe(*Host+":"+*Port, nil))
+	g := NewGame()
+	ws := NewWSProvider(&g)
+
+	s := Server{
+		gameInstance: g,
+		wsInstance:   ws,
+	}
+	s.start()
 }

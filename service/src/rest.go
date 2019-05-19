@@ -1,17 +1,26 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 //InitRestHandler Supported REST route handing
-func InitRestHandler() {
+func InitRestHandler(g *Game) {
 	prefix := "rest"
 	router := mux.NewRouter()
+
 	router.PathPrefix(prefix)
-	router.HandleFunc("/"+prefix+"/player/register/", registerPlayerHandler).Methods("POST", "OPTIONS")
-	router.HandleFunc("/"+prefix+"/player/unregister/", unregisterPlayerHandler).Methods("POST", "OPTIONS")
+
+	router.HandleFunc("/"+prefix+"/player/register/", func(w http.ResponseWriter, r *http.Request) {
+		registerPlayerHandler(w, r, g)
+	}).Methods("POST", "OPTIONS")
+
+	router.HandleFunc("/"+prefix+"/player/unregister/", func(w http.ResponseWriter, r *http.Request) {
+		unregisterPlayerHandler(w, r, g)
+	}).Methods("POST", "OPTIONS")
+
 	http.Handle("/", router)
 }
 
@@ -23,7 +32,7 @@ type _RegisterPlayerResponse struct {
 	ID string `json:"id"`
 }
 
-func registerPlayerHandler(w http.ResponseWriter, req *http.Request) {
+func registerPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) {
 	var body _RegisterPlayerBody
 
 	if err := ReadBytesFromBody(req.Body, &body); err != nil {
@@ -31,26 +40,32 @@ func registerPlayerHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if _, err := IsStringEmpty(body.Name); err != nil {
+	name := body.Name
+	if _, err := IsStringEmpty(name); err != nil {
 		SendErrorResponse(w, err)
 		return
 	}
 
-	id, err := GameInstance.addPlayerWithName(body.Name)
+	id, err := GeneratePlayerID(name)
 	if err != nil {
+		CatchError("Unable to register new player", err)
+		SendErrorResponse(w, err)
+		return
+	}
+
+	if err := g.addPlayerWithName(id, name); err != nil {
 		SendErrorResponse(w, err)
 		return
 	}
 
 	response := _RegisterPlayerResponse{
-		ID: *id,
+		ID: id,
 	}
 
 	SendResponse(w, response)
-	PrintLog("Player registered: " + *id)
 }
 
-func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request) {
+func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) {
 	var body _RegisterPlayerResponse
 
 	if err := ReadBytesFromBody(req.Body, &body); err != nil {
@@ -58,16 +73,12 @@ func unregisterPlayerHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if _, err := IsStringEmpty(body.ID); err != nil {
+	var id = body.ID
+	if _, err := IsStringEmpty(id); err != nil {
 		SendErrorResponse(w, err)
 		return
 	}
 
-	id := body.ID
-	if c := HubInstance.getClientByID(id); c != nil {
-		HubInstance.unregister <- c
-	}
-
-	PrintLog("Player unregistered: " + id)
+	g.removePlayerWithID(id)
 	SendResponse(w, nil)
 }

@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
+	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -14,6 +16,7 @@ const (
 
 //Client Websocket client connection
 type Client struct {
+	sync.Mutex
 	id   string
 	hub  *Hub
 	conn *websocket.Conn
@@ -21,66 +24,33 @@ type Client struct {
 }
 
 func (c *Client) getID() string {
+	c.Lock()
+	defer c.Unlock()
 	return c.id
 }
 
+func (c *Client) close() {
+	c.Lock()
+	defer c.Unlock()
+	c.hub.unregister <- c
+	c.conn.Close()
+}
+
 func (c *Client) read() {
-	defer func() {
-		c.hub.unregister <- c
-		c.conn.Close()
-	}()
+	defer c.close()
 
 	c.conn.SetReadLimit(maxMessageSize)
 	c.conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+
 	for {
-		var err error
+		_, message, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				CatchError("error: ", err)
 			}
 			break
 		}
-	}
-}
-
-func (c *Client) write() {
-	ticker := time.NewTicker(pingPeriod)
-
-	defer func() {
-		ticker.Stop()
-		c.conn.Close()
-	}()
-
-	for {
-		select {
-		case message, ok := <-c.send:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if !ok {
-				// The hub closed the channel.
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-				return
-			}
-
-			w, err := c.conn.NextWriter(websocket.TextMessage)
-			if err != nil {
-				return
-			}
-			w.Write(message)
-
-			n := len(c.send)
-			for i := 0; i < n; i++ {
-				w.Write(<-c.send)
-			}
-
-			if err := w.Close(); err != nil {
-				return
-			}
-		case <-ticker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-				return
-			}
-		}
+		c.hub.broadcast <- message
 	}
 }

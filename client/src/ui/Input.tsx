@@ -13,7 +13,7 @@ export interface IInputProps<T> {
 
 export const Input = <T extends {}>(props: IInputProps<T>) => { 
     const { id, className, placeholder, onChange, onKeyUp, value  } = props;
-    return <input className={appendClassNames("input", className)} 
+  	return <input className={appendClassNames("input", className)} 
         value={value}
         placeholder={placeholder} 
         onKeyUp={(e) => onKeyUp(e, id)}

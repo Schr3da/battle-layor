@@ -25,7 +25,8 @@ type Player struct {
 	position  Vector2d
 }
 
-func generateID(s string) (string, error) {
+//GeneratePlayerID Generate a randomized id based on the user name
+func GeneratePlayerID(s string) (string, error) {
 	if len(s) == 0 {
 		err := NewError("Provided string is empty")
 		CatchError("generateID", err)
@@ -44,22 +45,15 @@ func generateID(s string) (string, error) {
 }
 
 //NewPlayer Create a new Player based on provided name and position
-func NewPlayer(name string, position Vector2d) (*Player, error) {
-	id, err := generateID(name)
-
-	if err != nil {
-		return nil, err
-	}
-
-	p := &Player{
+func NewPlayer(id string, name string, position Vector2d) Player {
+	p := Player{
 		id:        id,
 		health:    100,
 		direction: 0.0,
 		mode:      SPECTATOR,
 		position:  position,
 	}
-
-	return p, err
+	return p
 }
 
 func (p *Player) getID() string {
