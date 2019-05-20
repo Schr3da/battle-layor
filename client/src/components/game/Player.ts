@@ -1,7 +1,8 @@
-import { Entity } from "./../common/Entity";
+import { canWalkOver, TMap } from "../../shared/utils/MapUtils";
+import { getGlobalState } from "../../stores/AppState";
+
+import { Entity } from "./Entity";
 import { Controls, SupportedKeys } from "./Controls";
-import { canWalkOver, TMap } from "../common/MapUtils";
-import { getGlobalState } from "../common/AppState";
 
 export class Player extends Entity {
 

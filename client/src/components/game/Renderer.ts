@@ -1,7 +1,8 @@
-import { Entity } from "../common/Entity";
+import { canWalkOver } from "../../shared/utils/MapUtils";
+
+import { Entity } from "./Entity";
 import { AssetManager } from "./AssetManager";
-import { Settings } from "../common/Settings";
-import { canWalkOver } from "../common/MapUtils";
+import { Settings } from "./Settings";
 
 const spriteSorter = (a: any, b: any) => {
     let posX: any;

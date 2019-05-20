@@ -1,22 +1,23 @@
 import * as PIXI from "pixi.js";
-import { Settings } from "./../common/Settings";
-import { MapStructure } from "./../common/MapUtils";
+import { Settings } from "./Settings";
+import { MapStructure } from "./../../shared/utils/MapUtils";
 
 declare var require: any;
 
-const brickImage = require("./../../assets/img/redbrick.png");
-const woodImage = require("./../../assets/img/wood.png");
-const purpstoneImage = require("./../../assets/img/purplestone.png");
-const mossyImage = require("./../../assets/img/mossy.png");
-const greyImage = require("./../../assets/img/greystone.png");
-const blueImage = require("./../../assets/img/bluestone.png");
-const eagleImage = require("./../../assets/img/eagle.png");
-const colorImage = require("./../../assets/img/colorstone.png"); 
+const brickImage = require("../../../assets/img/redbrick.png");
+const woodImage = require("../../../assets/img/wood.png");
+const purpstoneImage = require("../../../assets/img/purplestone.png");
+const mossyImage = require("../../../assets/img/mossy.png");
+const greyImage = require("../../../assets/img/greystone.png");
+const blueImage = require("../../../assets/img/bluestone.png");
+const eagleImage = require("../../../assets/img/eagle.png");
+const colorImage = require("../../../assets/img/colorstone.png"); 
 
 const brick = PIXI.BaseTexture.fromImage(brickImage);
 const wood = PIXI.BaseTexture.fromImage(woodImage);
-export const purpstone = PIXI.BaseTexture.fromImage(purpstoneImage);
 const mossy = PIXI.BaseTexture.fromImage(mossyImage);
+
+export const purpstone = PIXI.BaseTexture.fromImage(purpstoneImage);
 export const grey = PIXI.BaseTexture.fromImage(greyImage);
 export const blue = PIXI.BaseTexture.fromImage(blueImage);
 export const eagle = PIXI.BaseTexture.fromImage(eagleImage);

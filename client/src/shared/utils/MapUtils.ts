@@ -1,4 +1,4 @@
-import { IWSResponse, WSAction, WSResource } from "./WebSocketProvider"
+import { IWSResponse, WSAction, WSResource } from "../../providers/WebSocketProvider"
 
 export enum MapStructure {
     wall = "#",

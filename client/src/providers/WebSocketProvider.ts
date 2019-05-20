@@ -1,4 +1,4 @@
-import { getHost, isJson } from "./RestProvider";
+import { getHost, isJson } from "../shared/utils/NetworkUtils";
 
 export interface IWSRequest<T> {
     action: number;

@@ -1,4 +1,3 @@
-
 export const SupportedKeys = {
     Left: 37,
     Up: 38,
@@ -13,19 +12,17 @@ export class Controls {
 
     constructor() { 
         this.destroy(); 
-        
         this.activeKeys = {};
-        window.addEventListener('keyup', this.handleKeyUp, false);
+      
+      	window.addEventListener('keyup', this.handleKeyUp, false);
         window.addEventListener('keydown', this.handleKeyDown, false);    
     }
 
     private handleKeyUp = (e: KeyboardEvent) => {
-        e.preventDefault();
         this.activeKeys[e.keyCode] = null; 
     }
 
     private handleKeyDown = (e: KeyboardEvent) => {
-        e.preventDefault();
         this.activeKeys[e.keyCode] = true;
     }
 
@@ -34,8 +31,8 @@ export class Controls {
     }
 
     public destroy() {
-        window.removeEventListener("keyup", this.handleKeyUp);
-        window.removeEventListener("keydown", this.handleKeyDown);
+     		window.removeEventListener("keyup", this.handleKeyUp, false);
+        window.removeEventListener("keydown", this.handleKeyDown, false);
     }
 
 }

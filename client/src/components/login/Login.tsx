@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import { getGlobalState } from "./../common/AppState";
-import { registerNewPlayer, unregisterPlayer } from "./../common/RestProvider";
-import { Input } from "./Input";
+import { getGlobalState } from "../../stores/AppState";
+import { registerNewPlayer, unregisterPlayer } from "../../providers/RestProvider";
+import { Input } from "../../shared/input-field/Input";
 
-export interface IUserInterfaceWrapperProps {}
+export interface ILoginProps {}
 
-export interface IUserInterfaceWrapperState  {
+export interface ILoginState  {
     inputs: {[id in InputField]: string};
 }
 
@@ -14,9 +14,9 @@ export enum InputField {
     PlayerName = "player"
 }
 
-export class UserInterfaceWrapper extends React.Component<IUserInterfaceWrapperProps, IUserInterfaceWrapperState> {
+export class Login extends React.Component<ILoginProps, ILoginState> {
 
-    constructor(props: IUserInterfaceWrapperProps) {
+    constructor(props: ILoginProps) {
         super(props);
         this.state = {
             inputs: {

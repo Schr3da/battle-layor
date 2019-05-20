@@ -1,4 +1,4 @@
-import { Entity } from "./../common/Entity";
+import { Entity } from "./Entity";
 
 export class Camera extends Entity {
     

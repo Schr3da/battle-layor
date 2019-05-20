@@ -1,5 +1,5 @@
-import { WebSocketProvider, IWebSocketProviderConfig, IWSRequest, IWSResponse, OnReceiveCb, OnOpenCb, WSAction, WSResource } from "./WebSocketProvider";
-import { IVector2d } from "./../common//Entity";
+import { WebSocketProvider, IWebSocketProviderConfig, IWSRequest, IWSResponse, OnReceiveCb, OnOpenCb, WSAction, WSResource } from "../providers/WebSocketProvider";
+import { IVector2d } from "../shared/vector/Vector2d";
 
 export interface IonOpenedObserverCb {
     [WSAction.UI]: OnOpenCb[];

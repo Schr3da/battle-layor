@@ -1,12 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import { IWSResponse, WSAction, WSResource } from "./../common/WebSocketProvider";
+import { IWSResponse, WSAction, WSResource } from "../../providers/WebSocketProvider";
+import { TMap } from "../../shared/utils/MapUtils";
+
 import { AssetManager } from "./AssetManager";
 import { Controls } from "./Controls";
-import { Settings } from "./../common/Settings";
+import { Settings } from "./Settings";
 import { Player } from "./Player";
 import { updateView } from "./Renderer";
-import { TMap } from "../common/MapUtils";
 
 export class Game {
 
@@ -16,7 +17,7 @@ export class Game {
 	private assets: AssetManager;
 	private scene: PIXI.Container;
 	private controls: Controls;
-    private map: TMap;
+  private map: TMap;
 	private player: Player | null = null;
 
 	constructor(wrapper: Element) {
@@ -35,7 +36,7 @@ export class Game {
 		this.controls = new Controls();
 
 		this.scene = new PIXI.Container();
-		for (var x = 0; x < Settings.displayWidth; x++) {
+		for (let x = 0; x < Settings.displayWidth; x++) {
 			let sprite = new PIXI.Sprite(undefined);
 			sprite.position.x = x;
 			this.scene.addChild(sprite);

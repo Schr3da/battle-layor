@@ -1,7 +1,4 @@
-export interface IVector2d {
-	x: number;
-	y: number;
-}
+import { IVector2d } from "../../shared/vector/Vector2d" 
 
 export abstract class Entity {
 

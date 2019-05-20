@@ -1,10 +1,11 @@
 import * as React from "react";
 
-import { Game } from "./Game";
-import { getGlobalState } from "../common/AppState";
-import { WSAction } from "./../common/WebSocketProvider";
+import { getGlobalState } from "../../stores/AppState";
+import { WSAction } from "../../providers/WebSocketProvider";
 
-export class CanvasWrapper extends React.Component<{}, {}> {
+import { Game } from "./Game";
+
+export class GameWrapper extends React.Component<{}, {}> {
 
     private wrapperRef: Element | null = null;
     private game: Game | null = null;

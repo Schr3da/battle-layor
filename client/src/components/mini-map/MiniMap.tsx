@@ -1,10 +1,10 @@
 import * as React from "react";
-import { TMap, receivedMapData } from "./../common/MapUtils";
-import { getGlobalState } from "./../common/AppState";
-import { WSAction, IWSResponse } from "../common/WebSocketProvider";
-import { canWalkOver } from "../common/MapUtils";
 
-export class MiniMapWrapper extends React.Component {
+import { TMap, receivedMapData, canWalkOver } from "../../shared/utils/MapUtils";
+import { getGlobalState } from "../../stores/AppState";
+import { WSAction, IWSResponse } from "../../providers/WebSocketProvider";
+
+export class MiniMap extends React.Component {
    
     private canvasRef: HTMLCanvasElement | null = null;
 
@@ -12,7 +12,7 @@ export class MiniMapWrapper extends React.Component {
         if (receivedMapData(data) === false) {    
             return;
         }
-        this.redraw(data.data); 
+      	this.redraw(data.data); 
     }
 
     private redraw(data: TMap) {

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { appendClassNames } from "./Utils";
+import { appendClassNames } from "../utils/DomUtils";
 
 export interface IInputProps<T> {
     id: T;
