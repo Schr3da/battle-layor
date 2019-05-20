@@ -28,6 +28,7 @@ export class Game {
 		this.renderer = new PIXI.Application({
 			width: Settings.displayWidth,
 			height: Settings.displayHeight,
+			backgroundColor: 0xffffff,
 		});
 		this.renderer.ticker.add(this.render);
 		wrapper.appendChild(this.renderer.view);
