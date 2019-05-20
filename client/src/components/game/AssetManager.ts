@@ -4,6 +4,7 @@ import { MapStructure } from "./../../shared/utils/MapUtils";
 
 declare var require: any;
 
+//demo assets
 const brickImage = require("../../../assets/img/redbrick.png");
 const woodImage = require("../../../assets/img/wood.png");
 const purpstoneImage = require("../../../assets/img/purplestone.png");
@@ -13,9 +14,14 @@ const blueImage = require("../../../assets/img/bluestone.png");
 const eagleImage = require("../../../assets/img/eagle.png");
 const colorImage = require("../../../assets/img/colorstone.png"); 
 
-const brick = PIXI.BaseTexture.fromImage(brickImage);
+//new assets
+const wallImage = require("../../../assets/img/wall.png");
+const wall = PIXI.BaseTexture.fromImage(wallImage)
+
+export const brick = PIXI.BaseTexture.fromImage(brickImage);
 const wood = PIXI.BaseTexture.fromImage(woodImage);
-const mossy = PIXI.BaseTexture.fromImage(mossyImage);
+export const mossy = PIXI.BaseTexture.fromImage(mossyImage);
+
 
 export const purpstone = PIXI.BaseTexture.fromImage(purpstoneImage);
 export const grey = PIXI.BaseTexture.fromImage(greyImage);
@@ -39,9 +45,9 @@ private textures: {[key: string]: PIXI.Texture[]};
         };
 
         for (let step = 0; step < texWidth; step++) {
-            this.textures[MapStructure.wall][step] = new PIXI.Texture(brick, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures[MapStructure.wall][step] = new PIXI.Texture(wall, new PIXI.Rectangle(step, 0, 1, texHeight));
             this.textures[MapStructure.door][step] = new PIXI.Texture(wood, new PIXI.Rectangle(step, 0, 1, texHeight));
-            this.textures[MapStructure.corner][step] = new PIXI.Texture(mossy, new PIXI.Rectangle(step, 0, 1, texHeight));
+            this.textures[MapStructure.corner][step] = new PIXI.Texture(wall, new PIXI.Rectangle(step, 0, 1, texHeight));
             //this.textures[" "][step] = new PIXI.Texture(purpstone, new PIXI.Rectangle(step, 0, 1, texHeight));
             //this.textures["."][step] = new PIXI.Texture(grey, new PIXI.Rectangle(step, 0, 1, texHeight));
         }
