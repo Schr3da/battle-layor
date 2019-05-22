@@ -7,7 +7,7 @@ import (
 
 const (
 	//MapTilesX max tiles along x axis
-	MapTilesX int = 40
+	MapTilesX int = 60
 	//MapTilesY max tiles along y axis
 	MapTilesY int    = 60
 	wall      string = "#"

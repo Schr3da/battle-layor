@@ -54,6 +54,12 @@ func (p *WSProvider) start() {
 			return
 		}
 
+		pseudoId := query.Get("pseudoId")
+		if isEmpty, err := IsStringEmpty(pseudoId); isEmpty == true || err != nil {
+			CatchError("handleConnection", err)
+			return
+		}
+
 		connection, err := p.wsUpgrader.Upgrade(w, r, nil)
 		if err != nil {
 			CatchError("handleConnection", err)
@@ -64,13 +70,15 @@ func (p *WSProvider) start() {
 		resData, err := CreateWSResponse(p.gameInstance, data)
 		if err = connection.WriteMessage(mt, resData); err != nil {
 			CatchError("NewPlayerRegistered ", err)
+			return
 		}
 
 		client := &Client{
-			id:   id,
-			hub:  &p.hubInstance,
-			conn: connection,
-			send: make(chan WSBroadcast),
+			id:       id,
+			pseudoId: pseudoId,
+			hub:      &p.hubInstance,
+			conn:     connection,
+			send:     make(chan WSBroadcast),
 		}
 
 		p.hubInstance.register <- client

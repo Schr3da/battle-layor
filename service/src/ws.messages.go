@@ -48,15 +48,16 @@ type WSRequest struct {
 
 //WSBroadcast Broadcast structure
 type WSBroadcast struct {
-	data []byte
 	id   string
+	data []byte
 }
 
 //WSPlayerData Player structure which is communicated over ws
 type WSPlayerData struct {
-	direction Vector2d `json:"direction"`
-	position  Vector2d `json:"position"`
-	plane     Vector2d `json:"plane"`
+	PseudoId  string   `json:"pseudoId"`
+	Direction Vector2d `json:"direction"`
+	Position  Vector2d `json:"position"`
+	Plane     Vector2d `json:"plane"`
 }
 
 //NewWSResponse Create a new websocket json response object
@@ -77,15 +78,15 @@ func NewWSResponse(status int, action WSAction, resource WSResource, data interf
 }
 
 //CreateWSResponse General websocket data mapper for Responses
-func CreateWSResponse(g *Game, data []byte) ([]byte, error) {
-	var d WSRequest
-	if err := ReadBytes(data, &d); err != nil {
+func CreateWSResponse(g *Game, d []byte) ([]byte, error) {
+	var reqData WSRequest
+	if err := ReadBytes(d, &reqData); err != nil {
 		CatchError("handleMessage", err)
 		return nil, err
 	}
 
 	if g != nil {
-		switch d.Resource {
+		switch reqData.Resource {
 		case ResourceMap:
 			data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceMap, g.world)
 			return data, nil
@@ -94,9 +95,9 @@ func CreateWSResponse(g *Game, data []byte) ([]byte, error) {
 		}
 	} else {
 
-		switch d.Resource {
+		switch reqData.Resource {
 		case ResourcePlayer:
-			data := NewWSResponse(http.StatusAccepted, ActionGame, ResourcePlayer, d.Data)
+			data := NewWSResponse(http.StatusAccepted, ActionGame, ResourcePlayer, reqData.Data)
 			return data, nil
 		default:
 			return nil, NewError("Unknown resource request")

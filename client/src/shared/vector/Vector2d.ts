@@ -1,5 +1,4 @@
 export interface IVector2d {
-	x: number;
-	y: number;
+  x: number;
+  y: number;
 }
-

@@ -16,8 +16,8 @@ const (
 	ACTOR PlayerMode = 1
 )
 
-//GeneratePlayerID Generate a randomized id based on the user name
-func GeneratePlayerID(s string) (string, error) {
+//CreatePlayerID Generate a randomized id based on the user name
+func CreatePlayerID(s string) (string, error) {
 	if len(s) == 0 {
 		err := NewError("Provided string is empty")
 		CatchError("generateID", err)
@@ -35,6 +35,20 @@ func GeneratePlayerID(s string) (string, error) {
 	return hex.EncodeToString(hash.Sum(value)), nil
 }
 
+//CreatePseudoPlayerID Creates a new PseudoId from a generated layer id
+func CreatePseudoPlayerID(s string) (string, error) {
+	length := len(s)
+
+	if length == 0 {
+		err := NewError("Provided string is empty")
+		CatchError("CreatePseudoPlayerID", err)
+		return "", err
+	}
+
+	id := s[:length-length/2]
+	return id, nil
+}
+
 //Player Player
 type Player struct {
 	WSPlayerData
@@ -44,12 +58,13 @@ type Player struct {
 }
 
 //NewPlayer Create a new Player based on provided name and position
-func NewPlayer(id string, name string, position Vector2d) Player {
+func NewPlayer(id string, pseudoId, name string, position Vector2d) Player {
 	p := Player{
 		WSPlayerData: WSPlayerData{
-			direction: Zero(),
-			position:  position,
-			plane:     Zero(),
+			PseudoId:  pseudoId,
+			Direction: Zero(),
+			Position:  position,
+			Plane:     Zero(),
 		},
 		mode:   SPECTATOR,
 		id:     id,
@@ -66,24 +81,12 @@ func (p *Player) setHealth(value int) {
 	p.health = value
 }
 
-func (p *Player) setDirection(v Vector2d) {
-	p.direction = v
-}
-
-func (p *Player) setPosition(v Vector2d) {
-	p.position = v
-}
-
-func (p *Player) setPlane(v Vector2d) {
-	p.plane = v
-}
-
 func (p *Player) setMode(m PlayerMode) {
 	p.mode = m
 }
 
 func (p *Player) update(d WSPlayerData) {
-	p.setDirection(d.direction)
-	p.setPosition(d.position)
-	p.setPlane(d.plane)
+	p.Direction = d.Direction
+	p.Position = d.Position
+	p.Plane = d.Plane
 }

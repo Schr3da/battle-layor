@@ -56,10 +56,14 @@ func (h *Hub) run() {
 			h.remove(c)
 		case d := <-h.broadcast:
 			h.update(d)
-			for _, client := range h.clients {
+			for id, client := range h.clients {
+				if d.id == id {
+					continue
+				}
+
 				select {
 				case client.send <- d:
-					h.update(d)
+					PrintLog("udpated player " + id)
 				}
 			}
 		}

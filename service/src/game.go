@@ -27,14 +27,18 @@ func (g *Game) doesPlayerExist(id string) bool {
 	return ok
 }
 
-func (g *Game) addPlayer(id string, name string) error {
+func (g *Game) addPlayer(id string, d []byte) error {
+
+	var data GameAddPlayerData
+	ReadBytes(d, &data)
+
 	if g.doesPlayerExist(id) {
 		err := NewError("Player already exists")
 		CatchError("addPlayerWithName: ", err)
 		return err
 	}
 
-	player := NewPlayer(id, name, getRandomSpawnPlace(g.world))
+	player := NewPlayer(id, data.pseudoId, data.name, getRandomSpawnPlace(g.world))
 	g.players[id] = player
 	return nil
 }
@@ -74,7 +78,7 @@ func (g *Game) run() {
 		case r := <-g.send:
 			switch r.action {
 			case GameAddNewPlayer:
-				g.addPlayer(r.id, string(r.data))
+				g.addPlayer(r.id, r.data)
 			case GameRemovePlayer:
 				g.removePlayer(r.id)
 			case GameUpdatePlayer:

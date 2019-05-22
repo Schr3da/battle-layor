@@ -1,94 +1,96 @@
 import * as PIXI from "pixi.js";
 
-import { IWSResponse, WSAction, WSResource } from "../../providers/WebSocketProvider";
+import {
+  IWSResponse,
+  WSAction,
+  WSResource
+} from "../../providers/WebSocketProvider";
 import { TMap } from "../../shared/utils/MapUtils";
 
 import { AssetManager } from "./AssetManager";
 import { Controls } from "./Controls";
-import { Settings } from "./Settings";
+import { GameSettings } from "../Settings";
 import { Player } from "./Player";
 import { updateView } from "./Renderer";
 
 export class Game {
-
-	private animationFrameHandler: any;
-	private updateHandler: any;
-	private renderer: PIXI.Application;
-	private assets: AssetManager;
-	private scene: PIXI.Container;
-	private controls: Controls;
+  private animationFrameHandler: any;
+  private updateHandler: any;
+  private renderer: PIXI.Application;
+  private assets: AssetManager;
+  private scene: PIXI.Container;
+  private controls: Controls;
   private map: TMap;
-	private player: Player | null = null;
+  private player: Player | null = null;
 
-	constructor(wrapper: Element) {
-		this.map = [];
-		this.animationFrameHandler = null;
+  constructor(wrapper: Element) {
+    this.map = [];
+    this.animationFrameHandler = null;
 
-		PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-		this.renderer = new PIXI.Application({
-			width: Settings.displayWidth,
-			height: Settings.displayHeight,
-			backgroundColor: 0xffffff,
-		});
-		this.renderer.ticker.add(this.render);
-		wrapper.appendChild(this.renderer.view);
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    this.renderer = new PIXI.Application({
+      width: GameSettings.displayWidth,
+      height: GameSettings.displayHeight,
+      backgroundColor: GameSettings.background
+    });
+    this.renderer.ticker.add(this.render);
+    wrapper.appendChild(this.renderer.view);
 
-		this.assets = new AssetManager();
-		this.controls = new Controls();
+    this.assets = new AssetManager();
+    this.controls = new Controls();
 
-		this.scene = new PIXI.Container();
-		for (let x = 0; x < Settings.displayWidth; x++) {
-			let sprite = new PIXI.Sprite(undefined);
-			sprite.position.x = x;
-			this.scene.addChild(sprite);
-		}
+    this.scene = new PIXI.Container();
+    for (let x = 0; x < GameSettings.displayWidth; x++) {
+      let sprite = new PIXI.Sprite(undefined);
+      sprite.position.x = x;
+      this.scene.addChild(sprite);
+    }
 
-		this.renderer.stage.addChild(this.scene);
-	}
+    this.renderer.stage.addChild(this.scene);
+  }
 
-	private render = () => {
-		if ((this.map || []).length === 0) {
-			return;
-		}
-        this.renderer.render()
-	}
+  private render = () => {
+    if ((this.map || []).length === 0) {
+      return;
+    }
+    this.renderer.render();
+  };
 
-	private update = () => {
-		if (this.player == null) {
-			return;
-		}
-		updateView(this.scene, this.player, this.map, this.assets);
-	}
+  private update = () => {
+    if (this.player == null) {
+      return;
+    }
+    updateView(this.scene, this.player, this.map, this.assets);
+  };
 
-	public start() {
-		cancelAnimationFrame(this.animationFrameHandler);
-		this.animationFrameHandler = requestAnimationFrame(this.render);
+  public start() {
+    cancelAnimationFrame(this.animationFrameHandler);
+    this.animationFrameHandler = requestAnimationFrame(this.render);
 
-		clearInterval(this.updateHandler);
-		this.updateHandler = setInterval(this.update, Settings.refreshTime);
-	}
+    clearInterval(this.updateHandler);
+    this.updateHandler = setInterval(this.update, GameSettings.refreshTime);
+  }
 
-	public receivedData(d: IWSResponse<any>) {
-		if (d.action !== WSAction.GAME) {
-			return;
-		}
+  public receivedData(d: IWSResponse<any>) {
+    if (d.action !== WSAction.GAME) {
+      return;
+    }
 
-		switch (d.resource) {
-			case WSResource.MAP:
-				this.map = d.data;
-				this.player = new Player(20, 20, this.map, this.controls);
-			default:
-				console.log(d);
-		}
-	}
+    switch (d.resource) {
+      case WSResource.MAP:
+        this.map = d.data;
+        this.player = new Player(20, 20, this.map, this.controls);
+      default:
+        console.log(d);
+    }
+  }
 
-	public destory() {
-		cancelAnimationFrame(this.animationFrameHandler);
-		clearInterval(this.updateHandler);
+  public destory() {
+    cancelAnimationFrame(this.animationFrameHandler);
+    clearInterval(this.updateHandler);
 
-		if (this.renderer != null) {
-			this.renderer.destroy(true);
-		}
-	}
-
+    if (this.renderer != null) {
+      this.renderer.destroy(true);
+    }
+  }
 }

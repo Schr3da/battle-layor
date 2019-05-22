@@ -15,10 +15,15 @@ const (
 
 //Client Websocket client connection
 type Client struct {
-	id   string
-	hub  *Hub
-	conn *websocket.Conn
-	send chan WSBroadcast
+	id       string
+	pseudoId string
+	hub      *Hub
+	conn     *websocket.Conn
+	send     chan WSBroadcast
+}
+
+func (c *Client) getPseudoID() string {
+	return c.pseudoId
 }
 
 func (c *Client) getID() string {

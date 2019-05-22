@@ -35,11 +35,19 @@ type GameSender struct {
 	id     string
 }
 
+//GameAddPlayerData Structure which is used to register a new Player in game
+type GameAddPlayerData struct {
+	name     string
+	pseudoId string
+}
+
 //AddPlayerMessage Creates AddPlayerMessage consumed by game send channel
-func AddPlayerMessage(id string, name string) GameSender {
+func AddPlayerMessage(id string, pseudoId string, name string) GameSender {
+	data, _ := DataToBytes(GameAddPlayerData{name: name, pseudoId: pseudoId})
+
 	return GameSender{
 		action: GameAddNewPlayer,
-		data:   []byte(name),
+		data:   data,
 		id:     id,
 	}
 }
