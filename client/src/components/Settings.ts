@@ -8,6 +8,8 @@ interface IGameSettings {
   displayHeight: number;
   texWidth: number;
   texHeight: number;
+	joystickSize: number;
+	joystickColor: string;
 }
 
 export const GameSettings: IGameSettings = {
@@ -19,7 +21,9 @@ export const GameSettings: IGameSettings = {
   displayWidth: 640,
   displayHeight: 480,
   texWidth: 64,
-  texHeight: 64
+  texHeight: 64,
+  joystickSize: 100,
+  joystickColor: "blue"
 };
 
 interface IMapSettings {

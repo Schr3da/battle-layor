@@ -5,6 +5,8 @@ import { WSAction } from "../../providers/WebSocketProvider";
 
 import { Game } from "./Game";
 
+import "./GameWrapper.less";
+
 export class GameWrapper extends React.Component<{}, {}> {
   private wrapperRef: Element | null = null;
   private game: Game | null = null;
@@ -36,9 +38,10 @@ export class GameWrapper extends React.Component<{}, {}> {
 
   public render() {
     return (
-      <>
+      <div className="game-wrapper">
         <div ref={r => (this.wrapperRef = r)} className="canvas-wrapper" />
-      </>
+    		<div className="joystick-wrapper"></div>
+    	</div>
     );
   }
 }

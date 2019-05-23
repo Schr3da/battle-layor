@@ -1,7 +1,8 @@
 const path = require('path'),
 	webpack = require('webpack'),
 	HtmlWebpackPlugin = require('html-webpack-plugin'),
-	CleanWebpackPlugin = require('clean-webpack-plugin');
+	CleanWebpackPlugin = require('clean-webpack-plugin'),
+	MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const environment = process.env.NODE_ENV,
 project = __dirname.split("/"),
@@ -25,7 +26,14 @@ module.exports = {
         rules: [
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
-			{ test: /\.less$/, loader: 'less-loader' },
+				{ test: /\.less$/,
+					use: [
+						MiniCssExtractPlugin.loader,
+						"css-loader",
+						"less-loader"
+					]
+				
+				},
 		    { test: /\.(png|jpg|gif)$/, loader: 'file-loader', options: {} },
         ]
     },
@@ -36,13 +44,16 @@ module.exports = {
 		hints: false
 	},
 	plugins: [
-        new CleanWebpackPlugin([environment]),
+    new CleanWebpackPlugin([environment]),
 		new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+		new MiniCssExtractPlugin({
+			filename: "index.css"
+		}),
 		new HtmlWebpackPlugin({
 			hash: true,
 			filename: 'index.html'
-        })
+    })
 	],
 };
 

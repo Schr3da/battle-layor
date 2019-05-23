@@ -1,3 +1,9 @@
+import * as Nipple from "nipplejs"
+import { GameSettings } from '../Settings';
+import { querySelector } from "../../shared/utils/DomUtils";
+import { isMobile } from '../../shared/utils/BrowserUtils';
+
+
 export const SupportedKeys = {
   Left: 37,
   Up: 38,
@@ -6,13 +12,25 @@ export const SupportedKeys = {
   Space: 32
 };
 
+const getOption = () => ({
+	zone: querySelector(".joystick-wrapper") as any,
+	mode: 'dynamic' as "dynamic",
+	color: GameSettings.joystickColor,
+	size: GameSettings.joystickSize,
+});
+
 export class Controls {
-  private activeKeys: { [key: number]: true | null };
+  
+private activeKeys: { [key: number]: true | null };
+
+	private joystick: any;
 
   constructor() {
     this.destroy();
     this.activeKeys = {};
 
+		this.joystick = isMobile() ? Nipple.create(getOption()) : null;	
+			
     window.addEventListener("keyup", this.handleKeyUp, false);
     window.addEventListener("keydown", this.handleKeyDown, false);
   }
@@ -30,6 +48,10 @@ export class Controls {
   }
 
   public destroy() {
+		if (this.joystick != null) {
+			this.joystick.destroy();
+		}
+    
     window.removeEventListener("keyup", this.handleKeyUp, false);
     window.removeEventListener("keydown", this.handleKeyDown, false);
   }
