@@ -47,6 +47,9 @@ func SendErrorResponse(w http.ResponseWriter, err error) {
 
 //SendResponse Default response construction
 func SendResponse(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	w.WriteHeader(http.StatusAccepted)
 	w.Write(NewResponse(http.StatusAccepted, data))
 }

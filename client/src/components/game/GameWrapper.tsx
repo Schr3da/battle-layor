@@ -40,7 +40,8 @@ export class GameWrapper extends React.Component<{}, {}> {
     return (
       <div className="game-wrapper">
         <div ref={r => (this.wrapperRef = r)} className="canvas-wrapper" />
-    		<div className="joystick-wrapper"></div>
+    		<div className="joystick-wrapper-x"></div>
+    		<div className="joystick-wrapper-y"></div>
     	</div>
     );
   }
