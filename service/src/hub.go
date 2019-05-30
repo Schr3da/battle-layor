@@ -47,6 +47,33 @@ func (h *Hub) update(d WSBroadcast) {
 	}
 }
 
+func (h *Hub) validToBroadcast(d WSBroadcast) bool {
+	for id, client := range h.clients {
+		if client.getID() == id && client.getPseudoID() == d.pseudoId {
+			return true
+		}
+	}
+	return false
+}
+
+func (h *Hub) broadcastData(d WSBroadcast) {
+
+	if h.validToBroadcast(d) == false {
+		return
+	}
+
+	for id, client := range h.clients {
+		if d.id == id {
+			continue
+		}
+
+		select {
+		case client.send <- d:
+			PrintLog("udpated player " + id)
+		}
+	}
+}
+
 func (h *Hub) run() {
 	for {
 		select {
@@ -56,16 +83,7 @@ func (h *Hub) run() {
 			h.remove(c)
 		case d := <-h.broadcast:
 			h.update(d)
-			for id, client := range h.clients {
-				if d.id == id {
-					continue
-				}
-
-				select {
-				case client.send <- d:
-					PrintLog("udpated player " + id)
-				}
-			}
+			h.broadcastData(d)
 		}
 	}
 }

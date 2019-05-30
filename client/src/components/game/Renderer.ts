@@ -1,8 +1,9 @@
 import { canWalkOver } from "../../shared/utils/MapUtils";
 
-import { Entity } from "./Entity";
 import { AssetManager } from "./AssetManager";
 import { GameSettings } from "../Settings";
+import { Enemy } from './Enemy';
+import { Player } from './Player';
 
 const calculateTint = (
   side: number,
@@ -49,15 +50,16 @@ const spriteSorter = (a: any, b: any) => {
 
 const drawWalls = (
   scene: PIXI.Container,
-  e: Entity,
+  p: Player,
+  _e: {[pseudoId: string]: Enemy },
   map: any[],
   assets: AssetManager
 ) => {
   const zBuffer = [],
     shadowDepth = 12,
-    position = e.getPosition(),
-    direction = e.getDirection(),
-    plane = e.getPlane();
+    position = p.getPosition(),
+    direction = p.getDirection(),
+    plane = p.getPlane();
 
   let rayIdx = 0;
   let perpWallDist = 0;
@@ -177,15 +179,16 @@ let nextDt: number = 0;
 
 export const updateView = (
   scene: PIXI.Container,
-  e: Entity,
+  p: Player,
+  e: {[pseudoId: string]: Enemy},
   m: any[],
   assets: AssetManager
 ) => {
-  drawWalls(scene, e, m, assets);
+  drawWalls(scene, p, e, m, assets);
 
   prevDt = nextDt;
   nextDt = performance.now();
 
   const dt = (nextDt - prevDt) / 1000;
-  e.update(dt);
+  p.update(dt);
 };

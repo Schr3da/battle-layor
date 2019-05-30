@@ -11,6 +11,7 @@ import { AssetManager } from "./AssetManager";
 import { Controls } from "./Controls";
 import { GameSettings } from "../Settings";
 import { Player } from "./Player";
+import { Enemy } from "./Enemy";
 import { updateView } from "./Renderer";
 
 export class Game {
@@ -22,9 +23,11 @@ export class Game {
   private controls: Controls;
   private map: TMap;
   private player: Player | null = null;
+	private enemies: {[pseudoId: string]: Enemy};  
 
   constructor(wrapper: Element) {
     this.map = [];
+    this.enemies = {};
     this.animationFrameHandler = null;
 
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -60,7 +63,7 @@ export class Game {
     if (this.player == null) {
       return;
     }
-    updateView(this.scene, this.player, this.map, this.assets);
+    updateView(this.scene, this.player, this.enemies, this.map, this.assets);
   };
 
   public start() {
@@ -70,7 +73,7 @@ export class Game {
     clearInterval(this.updateHandler);
     this.updateHandler = setInterval(this.update, GameSettings.refreshTime);
   }
-
+  
   public receivedData(d: IWSResponse<any>) {
     if (d.action !== WSAction.GAME) {
       return;
@@ -80,8 +83,14 @@ export class Game {
       case WSResource.MAP:
         this.map = d.data;
         this.player = new Player(20, 20, this.map, this.controls);
-      default:
-        console.log(d);
+    		break;
+    	case WSResource.PLAYER:
+				const { pseudoId, position, direction, plane } = d.data,
+				enemy = this.enemies[pseudoId] == null ? new Enemy(0, 0, pseudoId) : this.enemies[pseudoId];
+    		enemy.update(0, position, direction, plane);
+    		break;
+    	default:
+    		return
     }
   }
 

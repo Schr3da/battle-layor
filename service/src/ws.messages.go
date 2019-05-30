@@ -48,8 +48,9 @@ type WSRequest struct {
 
 //WSBroadcast Broadcast structure
 type WSBroadcast struct {
-	id   string
-	data []byte
+	id       string
+	pseudoId string
+	data     []byte
 }
 
 //WSPlayerData Player structure which is communicated over ws

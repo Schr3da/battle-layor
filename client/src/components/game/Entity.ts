@@ -1,6 +1,7 @@
 import { IVector2d } from "../../shared/vector/Vector2d";
 
 export abstract class Entity {
+  
   protected position: IVector2d;
   protected direction: IVector2d;
   protected plane: IVector2d;
@@ -14,6 +15,10 @@ export abstract class Entity {
   public getPlane() {
     return this.plane;
   }
+
+	public setPlane(x: number, y: number) {
+		this.plane = { x, y };
+	}
 
   public getPosition(): IVector2d {
     return this.position;
@@ -31,5 +36,5 @@ export abstract class Entity {
     this.direction = { x, y };
   }
 
-  abstract update(delta: number);
+  abstract update(dt: number, position?: IVector2d, direction?: IVector2d, plane?: IVector2d );
 }

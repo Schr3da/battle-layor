@@ -70,7 +70,6 @@ export class WebSocketProvider {
   };
 
   public onSend<T>(data: T) {
-    console.log((data as any).data);
     try {
       const d = JSON.stringify(data);
       this.ws.send(d);

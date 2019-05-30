@@ -52,8 +52,9 @@ func (c *Client) read() {
 		}
 
 		c.hub.broadcast <- WSBroadcast{
-			id:   c.getID(),
-			data: message,
+			id:       c.getID(),
+			pseudoId: c.getPseudoID(),
+			data:     message,
 		}
 	}
 }
