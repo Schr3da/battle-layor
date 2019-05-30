@@ -101,6 +101,10 @@ export class Game {
     cancelAnimationFrame(this.animationFrameHandler);
     clearInterval(this.updateHandler);
 
+    if (this.controls) {
+      this.controls.destroy();
+    }
+
     if (this.renderer != null) {
       this.renderer.destroy(true);
     }

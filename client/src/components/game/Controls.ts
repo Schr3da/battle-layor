@@ -14,7 +14,6 @@ export class Controls {
   private virtualPad: VirtualGamePad;
 
   constructor() {
-    this.destroy();
     this.activeKeys = {};
     this.virtualPad = new VirtualGamePad(this.handleVirtualGamePad);
 
