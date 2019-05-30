@@ -54,8 +54,8 @@ func (p *WSProvider) start() {
 			return
 		}
 
-		pseudoId := query.Get("pseudoId")
-		if isEmpty, err := IsStringEmpty(pseudoId); isEmpty == true || err != nil {
+		pseudoID := query.Get("pseudoID")
+		if isEmpty, err := IsStringEmpty(pseudoID); isEmpty == true || err != nil {
 			CatchError("handleConnection", err)
 			return
 		}
@@ -75,7 +75,7 @@ func (p *WSProvider) start() {
 
 		client := &Client{
 			id:       id,
-			pseudoId: pseudoId,
+			pseudoID: pseudoID,
 			hub:      &p.hubInstance,
 			conn:     connection,
 			send:     make(chan WSBroadcast),

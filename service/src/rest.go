@@ -30,7 +30,7 @@ type _RegisterPlayerBody struct {
 
 type _RegisterPlayerResponse struct {
 	ID       string `json:"id"`
-	PseudoID string `json:"pseudoId"`
+	PseudoID string `json:"pseudoID"`
 }
 
 func registerPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) {
@@ -62,16 +62,16 @@ func registerPlayerHandler(w http.ResponseWriter, req *http.Request, g *Game) {
 		return
 	}
 
-	pseudoId, err := CreatePseudoPlayerID(id)
+	pseudoID, err := CreatePseudoPlayerID(id)
 	if err != nil {
 		SendErrorResponse(w, NewError("Player already exists"))
 		return
 	}
 
-	g.send <- AddPlayerMessage(id, pseudoId, name)
+	g.send <- AddPlayerMessage(id, pseudoID, name)
 	SendResponse(w, _RegisterPlayerResponse{
 		ID:       id,
-		PseudoID: pseudoId,
+		PseudoID: pseudoID,
 	})
 }
 

@@ -49,7 +49,7 @@ func (h *Hub) update(d WSBroadcast) {
 
 func (h *Hub) validToBroadcast(d WSBroadcast) bool {
 	for id, client := range h.clients {
-		if client.getID() == id && client.getPseudoID() == d.pseudoId {
+		if client.getID() == id && client.getpseudoID() == d.pseudoID {
 			return true
 		}
 	}

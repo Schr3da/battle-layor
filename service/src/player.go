@@ -35,7 +35,7 @@ func CreatePlayerID(s string) (string, error) {
 	return hex.EncodeToString(hash.Sum(value)), nil
 }
 
-//CreatePseudoPlayerID Creates a new PseudoId from a generated layer id
+//CreatePseudoPlayerID Creates a new pseudoID from a generated layer id
 func CreatePseudoPlayerID(s string) (string, error) {
 	length := len(s)
 
@@ -58,10 +58,10 @@ type Player struct {
 }
 
 //NewPlayer Create a new Player based on provided name and position
-func NewPlayer(id string, pseudoId, name string, position Vector2d) Player {
+func NewPlayer(id string, pseudoID, name string, position Vector2d) Player {
 	p := Player{
 		WSPlayerData: WSPlayerData{
-			PseudoId:  pseudoId,
+			PseudoID:  pseudoID,
 			Direction: Zero(),
 			Position:  position,
 			Plane:     Zero(),

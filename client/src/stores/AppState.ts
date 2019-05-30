@@ -23,7 +23,7 @@ export interface IonReceivedObserverCb {
 class GlobalState {
   private id: string | null = null;
 
-  private pseudoId: string | null = null;
+  private pseudoID: string | null = null;
 
   private provider: WebSocketProvider | null = null;
 
@@ -39,7 +39,7 @@ class GlobalState {
 
   private getDefaultConfig = (): IWebSocketProviderConfig => ({
     id: this.getId(),
-    pseudoId: this.getPseudoId(),
+    pseudoID: this.getPseudoId(),
     onOpen: this.onSocketOpened,
     onReceive: this.onSocketDataReceived
   });
@@ -64,7 +64,7 @@ class GlobalState {
     this.sendData({
       resource: WSResource.PLAYER,
       action: WSAction.GAME,
-      data: { position, direction, plane, pseudoId: this.getPseudoId() }
+      data: { position, direction, plane, pseudoID: this.getPseudoId() }
     });
   };
 
@@ -75,13 +75,13 @@ class GlobalState {
     this.socketDataReceivedCb[data.action].forEach(cb => cb(data));
   };
 
-  public setIds(id: string | null, pseudoId: string | null) {
+  public setIds(id: string | null, pseudoID: string | null) {
     this.id = id;
-    this.pseudoId = pseudoId;
+    this.pseudoID = pseudoID;
   }
 
   public getPseudoId(): string | null {
-    return this.pseudoId;
+    return this.pseudoID;
   }
 
   public getId(): string | null {

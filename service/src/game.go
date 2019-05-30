@@ -38,7 +38,7 @@ func (g *Game) addPlayer(id string, d []byte) error {
 		return err
 	}
 
-	player := NewPlayer(id, data.pseudoId, data.name, getRandomSpawnPlace(g.world))
+	player := NewPlayer(id, data.pseudoID, data.name, getRandomSpawnPlace(g.world))
 	g.players[id] = player
 	return nil
 }

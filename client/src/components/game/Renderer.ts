@@ -2,8 +2,8 @@ import { canWalkOver } from "../../shared/utils/MapUtils";
 
 import { AssetManager } from "./AssetManager";
 import { GameSettings } from "../Settings";
-import { Enemy } from './Enemy';
-import { Player } from './Player';
+import { Enemy } from "./Enemy";
+import { Player } from "./Player";
 
 const calculateTint = (
   side: number,
@@ -51,7 +51,7 @@ const spriteSorter = (a: any, b: any) => {
 const drawWalls = (
   scene: PIXI.Container,
   p: Player,
-  _e: {[pseudoId: string]: Enemy },
+  _e: { [pseudoID: string]: Enemy },
   map: any[],
   assets: AssetManager
 ) => {
@@ -180,7 +180,7 @@ let nextDt: number = 0;
 export const updateView = (
   scene: PIXI.Container,
   p: Player,
-  e: {[pseudoId: string]: Enemy},
+  e: { [pseudoID: string]: Enemy },
   m: any[],
   assets: AssetManager
 ) => {

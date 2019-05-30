@@ -16,14 +16,14 @@ const (
 //Client Websocket client connection
 type Client struct {
 	id       string
-	pseudoId string
+	pseudoID string
 	hub      *Hub
 	conn     *websocket.Conn
 	send     chan WSBroadcast
 }
 
-func (c *Client) getPseudoID() string {
-	return c.pseudoId
+func (c *Client) getpseudoID() string {
+	return c.pseudoID
 }
 
 func (c *Client) getID() string {
@@ -53,7 +53,7 @@ func (c *Client) read() {
 
 		c.hub.broadcast <- WSBroadcast{
 			id:       c.getID(),
-			pseudoId: c.getPseudoID(),
+			pseudoID: c.getpseudoID(),
 			data:     message,
 		}
 	}

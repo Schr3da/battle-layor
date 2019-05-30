@@ -58,7 +58,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
     }
 
     const state = getGlobalState();
-    state.setIds(d.data.id, d.data.pseudoId);
+    state.setIds(d.data.id, d.data.pseudoID);
     state.newGame();
   };
 

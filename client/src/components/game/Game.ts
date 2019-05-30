@@ -23,7 +23,7 @@ export class Game {
   private controls: Controls;
   private map: TMap;
   private player: Player | null = null;
-	private enemies: {[pseudoId: string]: Enemy};  
+  private enemies: { [pseudoID: string]: Enemy };
 
   constructor(wrapper: Element) {
     this.map = [];
@@ -73,7 +73,7 @@ export class Game {
     clearInterval(this.updateHandler);
     this.updateHandler = setInterval(this.update, GameSettings.refreshTime);
   }
-  
+
   public receivedData(d: IWSResponse<any>) {
     if (d.action !== WSAction.GAME) {
       return;
@@ -83,14 +83,17 @@ export class Game {
       case WSResource.MAP:
         this.map = d.data;
         this.player = new Player(20, 20, this.map, this.controls);
-    		break;
-    	case WSResource.PLAYER:
-				const { pseudoId, position, direction, plane } = d.data,
-				enemy = this.enemies[pseudoId] == null ? new Enemy(0, 0, pseudoId) : this.enemies[pseudoId];
-    		enemy.update(0, position, direction, plane);
-    		break;
-    	default:
-    		return
+        break;
+      case WSResource.PLAYER:
+        const { pseudoID, position, direction, plane } = d.data,
+          enemy =
+            this.enemies[pseudoID] == null
+              ? new Enemy(0, 0, pseudoID)
+              : this.enemies[pseudoID];
+        enemy.update(0, position, direction, plane);
+        break;
+      default:
+        return;
     }
   }
 

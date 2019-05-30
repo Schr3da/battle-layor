@@ -94,8 +94,8 @@ func getRandomSpawnPlace(tiles [MapTilesY][MapTilesX]string) Vector2d {
 
 		if isWalkable(tiles[y][x]) {
 			return Vector2d{
-				x: float64(x),
-				y: float64(y),
+				X: float64(x),
+				Y: float64(y),
 			}
 		}
 	}

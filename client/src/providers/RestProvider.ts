@@ -4,7 +4,7 @@ const REST_PREFIX = "rest";
 
 export interface IRegisterPlayerDto {
   id: string;
-  pseudoId: string;
+  pseudoID: string;
 }
 
 export const registerNewPlayer = async (name: string | null) => {

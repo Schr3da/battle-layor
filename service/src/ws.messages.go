@@ -49,13 +49,13 @@ type WSRequest struct {
 //WSBroadcast Broadcast structure
 type WSBroadcast struct {
 	id       string
-	pseudoId string
+	pseudoID string
 	data     []byte
 }
 
 //WSPlayerData Player structure which is communicated over ws
 type WSPlayerData struct {
-	PseudoId  string   `json:"pseudoId"`
+	PseudoID  string   `json:"pseudoID"`
 	Direction Vector2d `json:"direction"`
 	Position  Vector2d `json:"position"`
 	Plane     Vector2d `json:"plane"`

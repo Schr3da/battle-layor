@@ -4,8 +4,8 @@ import "math"
 
 //Vector2d Basic 2d Vector struct
 type Vector2d struct {
-	x float64 `json:"x"`
-	y float64 `json:"y"`
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
 }
 
 //NewVector2d Create 2d vector
@@ -36,7 +36,7 @@ func Unit() Vector2d {
 
 //Copy Copy vector (not a pointer)
 func (v Vector2d) Copy() Vector2d {
-	return Vector2d{v.x, v.y}
+	return Vector2d{v.X, v.Y}
 }
 
 //Magnitude Calculate value
@@ -46,53 +46,53 @@ func (v Vector2d) Magnitude() float64 {
 
 //MagnitudeSquared Calculate vector lenght
 func (v Vector2d) MagnitudeSquared() float64 {
-	return math.Pow(v.x, 2) + math.Pow(v.y, 2)
+	return math.Pow(v.X, 2) + math.Pow(v.Y, 2)
 }
 
 //AddVector Sum between two 2d vectors
 func (v Vector2d) AddVector(v2 Vector2d) Vector2d {
-	return Vector2d{v.x + v2.x, v.y + v2.y}
+	return Vector2d{v.X + v2.X, v.Y + v2.Y}
 }
 
 //SubtractVector Subtraction between two 2d vectors
 func (v Vector2d) SubtractVector(v2 Vector2d) Vector2d {
-	return Vector2d{v.x - v2.x, v.y - v2.y}
+	return Vector2d{v.X - v2.X, v.Y - v2.Y}
 }
 
 //MultiplyVector Multiplication of a two 2d vectors
 func (v Vector2d) MultiplyVector(v2 Vector2d) Vector2d {
-	return Vector2d{v.x * v2.x, v.y * v2.y}
+	return Vector2d{v.X * v2.X, v.Y * v2.Y}
 }
 
 //DivideVector Division of two 2d vectors
 func (v Vector2d) DivideVector(v2 Vector2d) Vector2d {
-	return Vector2d{v.x / v2.x, v.y / v2.y}
+	return Vector2d{v.X / v2.X, v.Y / v2.Y}
 }
 
 //MultiplyScalar Multiplication of a 2d vector with a scalar
 func (v Vector2d) MultiplyScalar(s float64) Vector2d {
-	return Vector2d{v.x * s, v.y * s}
+	return Vector2d{v.X * s, v.Y * s}
 }
 
 //DivideScalar Divide a 2d vector a scalar
 func (v Vector2d) DivideScalar(s float64) Vector2d {
-	return Vector2d{v.x / s, v.y / s}
+	return Vector2d{v.X / s, v.Y / s}
 }
 
 //Distance Calculate the distance between two 2d vectors
 func (v Vector2d) Distance(v2 Vector2d) float64 {
-	return math.Sqrt(math.Pow((v.x-v2.x)+(v.y-v2.y), 2))
+	return math.Sqrt(math.Pow((v.X-v2.X)+(v.Y-v2.Y), 2))
 }
 
 //Dot Calculate the dot product of two 2d vectors
 func (v Vector2d) Dot(v2 Vector2d) float64 {
-	return v.x*v2.x + v.y*v2.y
+	return v.X*v2.X + v.Y*v2.Y
 }
 
 //Reflect Calculate Reflection
 func (v Vector2d) Reflect(normal Vector2d) Vector2d {
 	dotProduct := v.Dot(normal)
-	return Vector2d{v.x - (2 * dotProduct * normal.x), v.y - (2 * dotProduct * normal.y)}
+	return Vector2d{v.X - (2 * dotProduct * normal.X), v.Y - (2 * dotProduct * normal.Y)}
 }
 
 //Normalize Calculate normalize vector
@@ -115,38 +115,38 @@ func (v Vector2d) Limit(max float64) Vector2d {
 
 //Angle Calculate angle between x and x
 func (v Vector2d) Angle() float64 {
-	return -1 * math.Atan2(v.y*-1, v.x)
+	return -1 * math.Atan2(v.Y*-1, v.X)
 }
 
 //Rotate Calculate rotation with  angle (radiant)
 func (v Vector2d) Rotate(angle float64) Vector2d {
 	return Vector2d{
-		v.x*math.Cos(angle) - v.y*math.Sin(angle),
-		v.x*math.Sin(angle) - v.y*math.Cos(angle),
+		v.X*math.Cos(angle) - v.Y*math.Sin(angle),
+		v.X*math.Sin(angle) - v.Y*math.Cos(angle),
 	}
 }
 
 //LinearInterpolateToVector Calculate interpolation (linear)
 func (v Vector2d) LinearInterpolateToVector(v2 Vector2d, amount float64) Vector2d {
 	return Vector2d{
-		linearInterpolate(v.x, v2.x, amount),
-		linearInterpolate(v.y, v2.y, amount),
+		linearInterpolate(v.X, v2.X, amount),
+		linearInterpolate(v.Y, v2.Y, amount),
 	}
 }
 
 //MapToScalars Map vector based on scalar valu
 func (v Vector2d) MapToScalars(oldMin, oldMax, newMin, newMax float64) Vector2d {
 	return Vector2d{
-		mapFloat(v.x, oldMin, oldMax, newMin, newMax),
-		mapFloat(v.y, oldMin, oldMax, newMin, newMax),
+		mapFloat(v.X, oldMin, oldMax, newMin, newMax),
+		mapFloat(v.Y, oldMin, oldMax, newMin, newMax),
 	}
 }
 
 //MapToVectors Map vector based on vectors
-func (v Vector2d) MapToVectors(oldMinV, oldMaxV, newMinV, newMaxV Vector2d) Vector2d {
+func (v Vector2d) MapToVectors(oldMinV Vector2d, oldMaxV Vector2d, newMinV Vector2d, newMaxV Vector2d) Vector2d {
 	return Vector2d{
-		mapFloat(v.x, oldMinV.x, oldMaxV.x, newMinV.x, newMaxV.x),
-		mapFloat(v.y, oldMinV.y, oldMaxV.y, newMinV.y, newMaxV.y),
+		mapFloat(v.X, oldMinV.X, oldMaxV.X, newMinV.X, newMaxV.X),
+		mapFloat(v.Y, oldMinV.Y, oldMaxV.Y, newMinV.Y, newMaxV.Y),
 	}
 }
 
@@ -165,24 +165,24 @@ func (v Vector2d) AngleBetween(v2 Vector2d) float64 {
 //ClampToScalars Calculate
 func (v Vector2d) ClampToScalars(min, max float64) Vector2d {
 	return Vector2d{
-		clampFloat(v.x, min, max),
-		clampFloat(v.y, min, max),
+		clampFloat(v.X, min, max),
+		clampFloat(v.Y, min, max),
 	}
 }
 
 //ClampToVectors Calcualte
 func (v Vector2d) ClampToVectors(minV, maxV Vector2d) Vector2d {
 	return Vector2d{
-		clampFloat(v.x, minV.x, maxV.x),
-		clampFloat(v.y, minV.y, maxV.y),
+		clampFloat(v.X, minV.X, maxV.X),
+		clampFloat(v.Y, minV.Y, maxV.Y),
 	}
 }
 
 //Floor vector values
 func (v Vector2d) Floor() Vector2d {
 	return Vector2d{
-		math.Floor(v.x),
-		math.Floor(v.y),
+		math.Floor(v.X),
+		math.Floor(v.Y),
 	}
 }
 
@@ -192,18 +192,18 @@ func (v Vector2d) Negate() Vector2d {
 }
 
 //X x coordinate value
-func (v *Vector2d) X() float64 {
-	return v.x
+func (v *Vector2d) getX() float64 {
+	return v.X
 }
 
 //Y Get y coordinate value
-func (v *Vector2d) Y() float64 {
-	return v.y
+func (v *Vector2d) getY() float64 {
+	return v.Y
 }
 
 //Get x & y coordinate value as tuple
 func (v *Vector2d) Get() (float64, float64) {
-	return v.x, v.y
+	return v.X, v.Y
 }
 
 func linearInterpolate(start, end, amount float64) float64 {
