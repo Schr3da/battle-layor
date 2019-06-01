@@ -1,17 +1,15 @@
 import * as React from "react";
 
-import { Login } from "./login/Login";
-import { MiniMap } from "./mini-map/MiniMap";
+import { LoginContainer } from './login/LoginContainer';
 import { GameWrapper } from "./game/GameWrapper";
+import { MiniMapContainer } from './mini-map/MiniMapContainer';
 
-export class Entry extends React.Component<{}, {}> {
-  public render() {
-    return (
-      <>
-        <Login />
-        <GameWrapper />
-        <MiniMap />
-      </>
-    );
-  }
+export const Entry = () => {
+  return (
+    <>
+      <LoginContainer/>
+      <GameWrapper />
+      <MiniMapContainer/>
+    </>
+  );
 }

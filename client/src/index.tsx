@@ -6,7 +6,7 @@ import { Entry } from "./components/Entry";
 import { getStore } from "./stores/Store";
 
 const App = () => (
-  <Provider store={getStore()}>
+	<Provider store={getStore()}>
     <Entry />;
   </Provider>
 );

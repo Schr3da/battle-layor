@@ -22,6 +22,19 @@ export const SetPlayerPseudoID = (pseudoID: string | null) => ({
   type: SET_PLAYER_PSEUDO_ID_ACTION
 });
 
+export const SET_PLAYER_IDS_ACTION = "SET_PLAYER_IDS_ACTION";
+export interface ISetPlayerIdsAction {
+	id: string;
+	pseudoID: string;
+	type: typeof SET_PLAYER_IDS_ACTION;
+}
+
+export const SetPlayerIds = (id: string | null, pseudoID: string | null) => ({
+	id, 
+	pseudoID,
+	type: SET_PLAYER_IDS_ACTION,
+})
+
 export const SET_PLAYER_MOVE_SPEED_ACTION = "SET_PLAYER_MOVE_SPEED_ACTION";
 export interface ISetPlayerMoveSpeedAction {
   moveSpeed: number;
@@ -81,6 +94,7 @@ export const SetPlayerPlane = (plane: IVector2d) => ({
 export type PlayerActions =
   | ISetPlayerIdAction
   | ISetPlayerPseudoIdAction
+  | ISetPlayerIdsAction
   | ISetPlayerRotationSpeedAction
   | ISetPlayerMoveSpeedAction
   | ISetPlayerPositionAction

@@ -1,5 +1,3 @@
-import { IVector2d } from "../shared/vector/Vector2d";
-
 export const UPDATE_ENEMY_WITH_DATA = "UPDATE_ENEMY_WITH_DATA";
 interface IUpdateEnemyWithData {
   data: any;

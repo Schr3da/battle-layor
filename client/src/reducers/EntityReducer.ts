@@ -7,7 +7,8 @@ import {
   SET_PLAYER_POSITION_ACTION,
   SET_PLAYER_PLANE_ACTION,
   SET_PLAYER_ROTATION_SPEED_ACTION,
-  SET_PLAYER_MOVE_SPEED_ACTION
+  SET_PLAYER_MOVE_SPEED_ACTION,
+	SET_PLAYER_IDS_ACTION
 } from "../actions/PlayerActions";
 
 export interface IEntity {
@@ -51,6 +52,10 @@ const initialState: IEntityState = {
   enemies: {}
 };
 
+const setPlayerIds = (state: IEntityState, id: string | null, pseudoID: string | null) => {
+	return { ...state, player: { ...state.player, id, pseudoID }}
+}
+
 const setPlayerId = (state: IEntityState, id: string | null) => {
   return { ...state, player: { ...state.player, id } };
 };
@@ -83,6 +88,8 @@ type Actions = PlayerActions;
 
 export const entityReducer = (state = initialState, action: Actions) => {
   switch (action.type) {
+    case SET_PLAYER_IDS_ACTION:
+    	return setPlayerIds(state, action.id, action.pseudoID);
     case SET_PLAYER_ID_ACTION:
       return setPlayerId(state, action.id);
     case SET_PLAYER_PSEUDO_ID_ACTION:

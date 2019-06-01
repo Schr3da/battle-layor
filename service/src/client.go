@@ -84,7 +84,6 @@ func (c *Client) write() {
 			if err != nil {
 				return
 			}
-
 			w.Write(resData)
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))

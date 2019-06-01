@@ -6,27 +6,17 @@ import {
   unregisterPlayer
 } from "../../providers/RestProvider";
 import { Input } from "../../shared/input-field/Input";
+import { InputField, InputFields } from '../../reducers/UIReducer';
+import { getInputValue } from '../../shared/utils/InputUtils';
 
-export interface ILoginProps {}
-
-export interface ILoginState {
-  inputs: { [id in InputField]: string };
+export interface ILoginProps {
+	inputs: InputFields;
+	onInputChange: (key: string, value: string) => void;
+	onRegister: () => void;
+	onUnregister: () => void;
 }
 
-export enum InputField {
-  PlayerName = "player"
-}
-
-export class Login extends React.Component<ILoginProps, ILoginState> {
-  constructor(props: ILoginProps) {
-    super(props);
-    this.state = {
-      inputs: {
-        player: ""
-      }
-    };
-  }
-
+export class Login extends React.Component<ILoginProps, {}> {
   private handleInputKeyUp = (e: any, id: InputField) => {
     e.persist();
 
@@ -35,41 +25,18 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
       return;
     }
 
-    this.handleInputChange(e, id);
+		this.props.onInputChange(id, e.target.value);
   };
 
-  private handleInputChange = (e: any, id: InputField) => {
-    e.persist();
-    this.setState(prev => ({
-      ...prev,
-      inputs: { ...prev.inputs, [id]: e.target.value }
-    }));
-  };
-
-  private handleRegister = async () => {
-    const value = this.state.inputs[InputField.PlayerName];
-    if (value == null || value.trim().length === 0) {
-      return;
-    }
-
-    const d = await registerNewPlayer(value);
-    if (d == null) {
-      return;
-    }
-
-    const state = getGlobalState();
-    state.setIds(d.data.id, d.data.pseudoID);
-    state.newGame();
-  };
-
-  private handleUnregister = async () => {
+	public  handleUnregister = async () => {
     const state = getGlobalState();
     await unregisterPlayer(state.getId());
     state.endGame();
   };
 
   public render() {
-    const { inputs } = this.state;
+    const { inputs, onInputChange, onRegister, onUnregister } = this.props;
+    
     return (
       <div className="ui-wrapper">
         <div>
@@ -77,14 +44,14 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
             id={InputField.PlayerName}
             className="playername"
             placeholder="Name"
-            value={inputs[InputField.PlayerName]}
-            onChange={this.handleInputChange}
+            value={getInputValue(inputs, InputField.PlayerName)}
+            onChange={(e, id) => onInputChange(id, e.target.value)}
             onKeyUp={this.handleInputKeyUp}
           />
         </div>
         <div>
-          <button onClick={this.handleRegister}>Register</button>
-          <button onClick={this.handleUnregister}>Unregister</button>
+          <button onClick={onRegister}>Register</button>
+          <button onClick={onUnregister}>Unregister</button>
         </div>
       </div>
     );

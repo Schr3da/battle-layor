@@ -33,6 +33,7 @@
     "less": "3.9.0",
     "redux": "4.0.1",
     "react-redux": "7.0.3",
+    "redux-thunk": "2.3.0",
     "nipplejs": "0.8.2",
     "source-map-loader": "0.2.4",
     "typescript": "3.0.1",
