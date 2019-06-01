@@ -3,21 +3,20 @@ import { createStore, applyMiddleware } from "redux";
 
 import { IEntityState } from "../reducers/EntityReducer";
 import { IUIState } from "../reducers/UIReducer";
+import { IMapState } from "../reducers/MapReducer";
+import { IControlsState } from "../reducers/ControlsReducer";
 import { reducers } from "../reducers";
-import { IMapState } from '../reducers/MapReducer';
 
 export interface IStore {
-  entities: IEntityState;
   ui: IUIState;
-  map: IMapState; 
+  controls: IControlsState;
+  entities: IEntityState;
+  map: IMapState;
 }
 
 export const getStore = () => {
-  if ((window as any).store == null) {
-    (window as any).store = createStore(
-    	reducers,
-    	applyMiddleware(thunk)
-    )
+  if (window.store == null) {
+    window.store = createStore(reducers, applyMiddleware(thunk));
   }
-  return (window as any).store;
+  return window.store;
 };

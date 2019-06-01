@@ -5,8 +5,15 @@ import { Provider } from "react-redux";
 import { Entry } from "./components/Entry";
 import { getStore } from "./stores/Store";
 
-const App = () => (
-	<Provider store={getStore()}>
+declare global {
+  interface Window {
+    opera: any;
+    store: any;
+  }
+}
+
+export const App = () => (
+  <Provider store={getStore()}>
     <Entry />;
   </Provider>
 );
