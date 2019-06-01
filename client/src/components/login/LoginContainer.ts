@@ -17,7 +17,7 @@ const mapStateTopProps = (state: IStore) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   onInputChange: (key: string, value: string) =>
     dispatch(handleInputChange(key, value)),
   onRegister: () => dispatch(handleRegister()),
