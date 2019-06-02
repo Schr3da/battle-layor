@@ -1,14 +1,14 @@
 import * as Nipple from "nipplejs";
 
 import { GameSettings } from "../../Settings";
+import { setValueForVirtualGamePad } from "../../../actions/VirtualGamePadActions";
 import { querySelector } from "../../../shared/utils/DomUtils";
 import { isMobile } from "../../../shared/utils/BrowserUtils";
-import { SupportedKeys } from "./Controls";
-
-export enum VirtualGamePadEnum {
-  xAxis,
-  yAxis
-}
+import { getStore } from "../../../stores/Store";
+import {
+  VirtualGamePadEnum,
+  SupportedKeys
+} from "../../../reducers/ControlsReducer";
 
 const getOptionX = () => ({
   zone: querySelector(".joystick-wrapper-x") as any,
@@ -33,21 +33,13 @@ export interface IVirtualGamePad {
   yAxis: any;
 }
 
-export type OnVirtualGamePadUpdateFunc = (
-  action: number,
-  type: VirtualGamePadEnum
-) => void;
-
 export class VirtualGamePad {
   private controllers: IVirtualGamePad | null = null;
-  private onUpdate: OnVirtualGamePadUpdateFunc = () => {};
 
-  constructor(onUpdate: OnVirtualGamePadUpdateFunc) {
+  constructor() {
     if (isMobile() === false) {
       return;
     }
-
-    this.onUpdate = onUpdate;
 
     this.controllers = {
       xAxis: Nipple.create(getOptionX()),
@@ -74,6 +66,14 @@ export class VirtualGamePad {
       this.onUpdate(SupportedKeys.End, VirtualGamePadEnum.yAxis)
     );
   }
+
+  private onUpdate = (keyCode: number, axis: VirtualGamePadEnum) => {
+    const store = getStore();
+    if (store == null) {
+      return;
+    }
+    store.dispatch(setValueForVirtualGamePad(axis, keyCode));
+  };
 
   public destroy() {
     if (this.controllers != null && this.controllers.xAxis != null) {

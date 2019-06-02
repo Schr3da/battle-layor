@@ -1,5 +1,7 @@
 import { IWSResponse } from "../providers/WebSocketProvider";
 import { TMap } from "../shared/utils/MapUtils";
+import { IPlayer } from "../reducers/EntityReducer";
+import { IControlsState } from "../reducers/ControlsReducer";
 
 export const CREATE_GAME_INSTANCE_ACTION = "CREATE_GAME_INSTANCE_ACTION";
 export interface ICreateGameInstanceAction {
@@ -24,6 +26,25 @@ export const receivedInitialGameData = (data: IWSResponse<TMap>) => ({
   type: RECEIVED_INITIAL_GAME_DATA_ACTION
 });
 
+export const ON_UPADTE_RENDERER_ACTION = "ON_UPADTE_RENDERER_ACTION";
+export interface IOnUpdateRendererAction {
+  entities: IPlayer;
+  controls: IControlsState;
+  willSend: boolean;
+  type: typeof ON_UPADTE_RENDERER_ACTION;
+}
+
+export const updateRenderer = (
+  player: IPlayer,
+  controls: IControlsState,
+  willSend: boolean
+) => ({
+  player,
+  controls,
+  willSend,
+  type: ON_UPADTE_RENDERER_ACTION
+});
+
 export const DESTROY_GAME_INSTANCE_ACTION = "DESTROY_GAME_INSTANCE_ACTION";
 export interface IDestroyGameInstanceAction {
   type: typeof DESTROY_GAME_INSTANCE_ACTION;
@@ -36,4 +57,5 @@ export const destroyGameInstance = () => ({
 export type GameActions =
   | ICreateGameInstanceAction
   | IReceivedInitialGameDataAction
+  | IOnUpdateRendererAction
   | IDestroyGameInstanceAction;

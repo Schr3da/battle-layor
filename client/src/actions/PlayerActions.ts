@@ -1,4 +1,7 @@
 import { IVector2d } from "../shared/vector/Vector2d";
+import { sendWebSocketData } from "./WebSocketActions";
+import { IStore } from "../stores/Store";
+import { WSResource, WSAction } from "../providers/WebSocketProvider";
 
 export const SET_PLAYER_IDS_ACTION = "SET_PLAYER_IDS_ACTION";
 export interface ISetPlayerIdsAction {
@@ -41,19 +44,46 @@ export interface IUpdatePlayerWithDataAction {
   position: IVector2d;
   direction: IVector2d;
   plane: IVector2d;
+  prevDirX: number;
+  prevPlaneX: number;
   type: typeof UPDATE_PLAYER_WITH_DATA_ACTION;
 }
 
 export const updatePlayerWithData = (
   position: IVector2d,
   direction: IVector2d,
-  plane: IVector2d
-) => ({
-  position,
-  direction,
-  plane,
-  type: UPDATE_PLAYER_WITH_DATA_ACTION
-});
+  plane: IVector2d,
+  prevDirX: number,
+  prevPlaneX: number,
+  sendData: boolean
+) => {
+  return (dispatch: Function, getState: () => IStore) => {
+    const { id, pseudoID } = getState().entities.player;
+    if (id != null && pseudoID != null && sendData == true) {
+      dispatch(
+        sendWebSocketData({
+          resource: WSResource.PLAYER,
+          action: WSAction.GAME,
+          data: {
+            position,
+            direction,
+            plane,
+            pseudoID
+          }
+        })
+      );
+    }
+
+    return {
+      position,
+      direction,
+      plane,
+      prevDirX,
+      prevPlaneX,
+      type: UPDATE_PLAYER_WITH_DATA_ACTION
+    };
+  };
+};
 
 export type PlayerActions =
   | ISetPlayerIdsAction

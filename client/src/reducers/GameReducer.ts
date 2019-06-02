@@ -29,7 +29,7 @@ const openedConnection = (state: IGameState) => {
   if (state.instance == null) {
     return state;
   }
-  state.instance.start();
+  state.instance.init();
   return state;
 };
 

@@ -96,7 +96,9 @@ const updatePlayerData = (
       ...state.player,
       position: action.position,
       plane: action.plane,
-      direction: action.direction
+      direction: action.direction,
+      prevDirX: action.prevDirX,
+      prevPlaneX: action.prevPlaneX
     }
   };
 };

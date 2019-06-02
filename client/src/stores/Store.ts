@@ -21,7 +21,7 @@ export interface IStore {
 export const initStore = () =>
   (window.store = createStore(reducers, applyMiddleware(thunk)));
 
-const getStore = () => {
+export const getStore = () => {
   if (window.store == null) {
     console.error("store is null");
   }

@@ -17,11 +17,13 @@ export class Game {
     this.animationFrameHandler = null;
 
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
     this.renderer = new PIXI.Application({
       width: GameSettings.displayWidth,
       height: GameSettings.displayHeight,
       backgroundColor: GameSettings.background
     });
+
     this.renderer.ticker.add(this.render);
     wrapper.appendChild(this.renderer.view);
 
@@ -42,7 +44,7 @@ export class Game {
 
   private update = () => updateView(this.scene, this.assets);
 
-  public start() {
+  public init() {
     cancelAnimationFrame(this.animationFrameHandler);
     this.animationFrameHandler = requestAnimationFrame(this.render);
 
