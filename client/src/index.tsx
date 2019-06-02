@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
 import { Entry } from "./components/Entry";
-import { getStore } from "./stores/Store";
+import { initStore } from "./stores/Store";
 
 declare global {
   interface Window {
@@ -13,8 +13,8 @@ declare global {
 }
 
 export const App = () => (
-  <Provider store={getStore()}>
-    <Entry />;
+  <Provider store={initStore()}>
+    <Entry />
   </Provider>
 );
 

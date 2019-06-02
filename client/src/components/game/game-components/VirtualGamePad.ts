@@ -1,7 +1,8 @@
 import * as Nipple from "nipplejs";
-import { GameSettings } from "../Settings";
-import { querySelector } from "../../shared/utils/DomUtils";
-import { isMobile } from "../../shared/utils/BrowserUtils";
+
+import { GameSettings } from "../../Settings";
+import { querySelector } from "../../../shared/utils/DomUtils";
+import { isMobile } from "../../../shared/utils/BrowserUtils";
 import { SupportedKeys } from "./Controls";
 
 export enum VirtualGamePadEnum {

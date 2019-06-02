@@ -8,8 +8,6 @@ import {
 } from "../../actions/UIActions";
 
 const mapStateTopProps = (state: IStore) => {
-  console.log(state);
-
   return {
     hasLoggedIn:
       state.entities.player.id != null && state.entities.player.pseudoID,

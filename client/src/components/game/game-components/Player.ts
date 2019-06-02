@@ -1,8 +1,6 @@
-import { canWalkOver, TMap } from "../../shared/utils/MapUtils";
-import { getGlobalState } from "../../stores/AppState";
-
-import { Entity } from "./Entity";
+import { canWalkOver, TMap } from "../../../shared/utils/MapUtils";
 import { Controls, SupportedKeys } from "./Controls";
+import { Entity } from "./Entity";
 
 export class Player extends Entity {
   private map: TMap;
@@ -23,8 +21,10 @@ export class Player extends Entity {
       return;
     }
 
+    /*
     const state = getGlobalState();
     state.onSendPlayerData(this.direction, this.plane, this.position);
+    */
   }
 
   public update(dt: number) {

@@ -1,17 +1,8 @@
 import * as PIXI from "pixi.js";
 
-import {
-  IWSResponse,
-  WSAction,
-  WSResource
-} from "../../providers/WebSocketProvider";
-import { TMap } from "../../shared/utils/MapUtils";
-
 import { AssetManager } from "./AssetManager";
 import { Controls } from "./Controls";
-import { GameSettings } from "../Settings";
-import { Player } from "./Player";
-import { Enemy } from "./Enemy";
+import { GameSettings } from "../../Settings";
 import { updateView } from "./Renderer";
 
 export class Game {
@@ -21,13 +12,8 @@ export class Game {
   private assets: AssetManager;
   private scene: PIXI.Container;
   private controls: Controls;
-  private map: TMap;
-  private player: Player | null = null;
-  private enemies: { [pseudoID: string]: Enemy };
 
   constructor(wrapper: Element) {
-    this.map = [];
-    this.enemies = {};
     this.animationFrameHandler = null;
 
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -52,19 +38,9 @@ export class Game {
     this.renderer.stage.addChild(this.scene);
   }
 
-  private render = () => {
-    if ((this.map || []).length === 0) {
-      return;
-    }
-    this.renderer.render();
-  };
+  private render = () => this.renderer.render();
 
-  private update = () => {
-    if (this.player == null) {
-      return;
-    }
-    updateView(this.scene, this.player, this.enemies, this.map, this.assets);
-  };
+  private update = () => updateView(this.scene, this.assets);
 
   public start() {
     cancelAnimationFrame(this.animationFrameHandler);
@@ -74,30 +50,7 @@ export class Game {
     this.updateHandler = setInterval(this.update, GameSettings.refreshTime);
   }
 
-  public receivedData(d: IWSResponse<any>) {
-    if (d.action !== WSAction.GAME) {
-      return;
-    }
-
-    switch (d.resource) {
-      case WSResource.MAP:
-        this.map = d.data;
-        this.player = new Player(20, 20, this.map, this.controls);
-        break;
-      case WSResource.PLAYER:
-        const { pseudoID, position, direction, plane } = d.data,
-          enemy =
-            this.enemies[pseudoID] == null
-              ? new Enemy(0, 0, pseudoID)
-              : this.enemies[pseudoID];
-        enemy.update(0, position, direction, plane);
-        break;
-      default:
-        return;
-    }
-  }
-
-  public destory() {
+  public destroy() {
     cancelAnimationFrame(this.animationFrameHandler);
     clearInterval(this.updateHandler);
 

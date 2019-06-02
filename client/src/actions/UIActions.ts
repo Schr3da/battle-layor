@@ -2,7 +2,11 @@ import { IStore } from "../stores/Store";
 import { getNullableInputValue } from "../shared/utils/InputUtils";
 import { InputField } from "../reducers/UIReducer";
 import { registerNewPlayer, unregisterPlayer } from "../providers/RestProvider";
-import { SetPlayerIds } from "./PlayerActions";
+import { setPlayerIds } from "./PlayerActions";
+import {
+  closeWebSocketConnection,
+  OPEN_WS_CONNECTION_ACTION
+} from "./WebSocketActions";
 
 export const ON_INPUT_CHANGE_ACTION = "ON_INPUT_CHANGE_ACTION";
 export interface IOnInputChangeAction {
@@ -56,11 +60,19 @@ export const handleRegister = () => {
     const d = await registerNewPlayer(name);
     dispatch(setLoading(false));
 
-    if (d == null) {
+    if (d == null || d.data == null) {
       return;
     }
 
-    dispatch(SetPlayerIds(d.data.id, d.data.pseudoID));
+    const { id, pseudoID } = d.data;
+
+    dispatch(setPlayerIds(id, pseudoID));
+
+    dispatch({
+      id,
+      pseudoID,
+      type: OPEN_WS_CONNECTION_ACTION
+    });
   };
 };
 
@@ -77,7 +89,8 @@ export const handleUnregister = () => {
     await unregisterPlayer(entities.player.id);
     dispatch(setLoading(false));
 
-    dispatch(SetPlayerIds(null, null));
+    dispatch(setPlayerIds(null, null));
+    dispatch(closeWebSocketConnection());
   };
 };
 

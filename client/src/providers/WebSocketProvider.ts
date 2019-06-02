@@ -1,4 +1,10 @@
 import { getHost, isJson } from "../shared/utils/NetworkUtils";
+import { receivedInitialGameData } from "../actions/GameActions";
+
+import {
+  openedWebSocketConnection,
+  receivedWsData
+} from "../actions/WebSocketActions";
 
 export interface IWSRequest<T> {
   action: number;
@@ -25,23 +31,17 @@ export enum WSResource {
 }
 
 export type OnOpenCb = () => void;
-
 export type OnReceiveCb = <T>(data: IWSResponse<T>) => void;
 
 export interface IWebSocketProviderConfig {
   id: string | null;
   pseudoID: string | null;
-  onOpen: OnOpenCb;
-  onReceive: OnReceiveCb;
 }
 
 export class WebSocketProvider {
-  private ws: WebSocket;
-  private config: IWebSocketProviderConfig;
+  private ws: WebSocket | null = null;
 
   constructor(config: IWebSocketProviderConfig) {
-    this.config = config;
-
     this.ws = new WebSocket(
       "ws://" +
         getHost() +
@@ -50,6 +50,7 @@ export class WebSocketProvider {
         "&pseudoID=" +
         config.pseudoID
     );
+
     this.ws.onopen = this.onOpen as any;
     this.ws.onmessage = this.onReceived as any;
     this.ws.onclose = this.onClose as any;
@@ -57,7 +58,8 @@ export class WebSocketProvider {
   }
 
   private onOpen = (_e: Event) => {
-    this.config.onOpen();
+    const store = window.store;
+    store.dispatch(openedWebSocketConnection());
   };
 
   private onReceived = (m: MessageEvent) => {
@@ -65,11 +67,23 @@ export class WebSocketProvider {
       return;
     }
 
+    const store = window.store;
     const data = JSON.parse(m.data) as IWSResponse<any>;
-    this.config.onReceive(data);
+
+    if (data.resource == WSResource.MAP) {
+      store.dispatch(receivedInitialGameData(data));
+      return;
+    }
+
+    store.dispatch(receivedWsData(data));
   };
 
   public onSend<T>(data: T) {
+    if (this.ws == null) {
+      console.error("WebsocketProvider: No current SocketConnection");
+      return;
+    }
+
     try {
       const d = JSON.stringify(data);
       this.ws.send(d);

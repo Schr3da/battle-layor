@@ -38,7 +38,10 @@ const setValueForKeyCode = (
 
 type Actions = ControlActions;
 
-export const controlsReducer = (state = initialState, action: Actions) => {
+export const controlsReducer = (
+  state: IControlsState = initialState,
+  action: Actions
+) => {
   switch (action.type) {
     case SET_VALUE_FOR_KEY_CODE:
       return setValueForKeyCode(state, action.keyCode, action.value);

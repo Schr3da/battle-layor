@@ -1,15 +1,20 @@
 import { IVector2d, createVector2d } from "../shared/vector/Vector2d";
+import { EnemyActions, UPDATE_ENEMY_WITH_DATA } from "../actions/EnemyActions";
+
 import {
   PlayerActions,
-  SET_PLAYER_ID_ACTION,
-  SET_PLAYER_PSEUDO_ID_ACTION,
-  SET_PLAYER_DIRECTION_ACTION,
-  SET_PLAYER_POSITION_ACTION,
-  SET_PLAYER_PLANE_ACTION,
   SET_PLAYER_ROTATION_SPEED_ACTION,
   SET_PLAYER_MOVE_SPEED_ACTION,
-	SET_PLAYER_IDS_ACTION
+  SET_PLAYER_IDS_ACTION,
+  UPDATE_PLAYER_WITH_DATA_ACTION,
+  IUpdatePlayerWithDataAction
 } from "../actions/PlayerActions";
+
+import {
+  RECEIVED_INITIAL_GAME_DATA_ACTION,
+  GameActions
+} from "../actions/GameActions";
+import { IWSEntity } from "../shared/utils/EntityUtils";
 
 export interface IEntity {
   position: IVector2d;
@@ -52,28 +57,12 @@ const initialState: IEntityState = {
   enemies: {}
 };
 
-const setPlayerIds = (state: IEntityState, id: string | null, pseudoID: string | null) => {
-	return { ...state, player: { ...state.player, id, pseudoID }}
-}
-
-const setPlayerId = (state: IEntityState, id: string | null) => {
-  return { ...state, player: { ...state.player, id } };
-};
-
-const setPlayerPseudoId = (state: IEntityState, pseudoID: string | null) => {
-  return { ...state, player: { ...state.player, pseudoID } };
-};
-
-const setPlayerDirection = (state: IEntityState, direction: IVector2d) => {
-  return { ...state, player: { ...state.player, direction } };
-};
-
-const setPlayerPlane = (state: IEntityState, plane: IVector2d) => {
-  return { ...state, player: { ...state.player, plane } };
-};
-
-const setPlayerPosition = (state: IEntityState, plane: IVector2d) => {
-  return { ...state, player: { ...state.player, plane } };
+const setPlayerIds = (
+  state: IEntityState,
+  id: string | null,
+  pseudoID: string | null
+) => {
+  return { ...state, player: { ...state.player, id, pseudoID } };
 };
 
 const setPlayerRotationSpeed = (state: IEntityState, rotSpeed: number) => {
@@ -84,26 +73,63 @@ const setPlayerMoveSpeed = (state: IEntityState, moveSpeed: number) => {
   return { ...state, player: { ...state.player, moveSpeed } };
 };
 
-type Actions = PlayerActions;
+const setInitialPosition = (state: IEntityState) => {
+  return {
+    ...state,
+    player: {
+      ...state.player,
+      position: {
+        x: 20,
+        y: 20
+      }
+    }
+  };
+};
 
-export const entityReducer = (state = initialState, action: Actions) => {
+const updatePlayerData = (
+  state: IEntityState,
+  action: IUpdatePlayerWithDataAction
+) => {
+  return {
+    ...state,
+    player: {
+      ...state.player,
+      position: action.position,
+      plane: action.plane,
+      direction: action.direction
+    }
+  };
+};
+
+const updateEnemyData = (state: IEntityState, data: IWSEntity) => {
+  return {
+    ...state,
+    enemies: {
+      ...state.enemies,
+      [data.pseudoID]: data
+    }
+  };
+};
+
+type Actions = EnemyActions | PlayerActions | GameActions;
+
+export const entityReducer = (
+  state: IEntityState = initialState,
+  action: Actions
+) => {
   switch (action.type) {
+    case RECEIVED_INITIAL_GAME_DATA_ACTION:
+      return setInitialPosition(state);
     case SET_PLAYER_IDS_ACTION:
-    	return setPlayerIds(state, action.id, action.pseudoID);
-    case SET_PLAYER_ID_ACTION:
-      return setPlayerId(state, action.id);
-    case SET_PLAYER_PSEUDO_ID_ACTION:
-      return setPlayerPseudoId(state, action.pseudoID);
-    case SET_PLAYER_DIRECTION_ACTION:
-      return setPlayerDirection(state, action.direction);
-    case SET_PLAYER_PLANE_ACTION:
-      return setPlayerPlane(state, action.plane);
-    case SET_PLAYER_POSITION_ACTION:
-      return setPlayerPosition(state, action.position);
+      return setPlayerIds(state, action.id, action.pseudoID);
     case SET_PLAYER_ROTATION_SPEED_ACTION:
       return setPlayerRotationSpeed(state, action.rotSpeed);
     case SET_PLAYER_MOVE_SPEED_ACTION:
       return setPlayerMoveSpeed(state, action.moveSpeed);
+    case UPDATE_PLAYER_WITH_DATA_ACTION:
+      return updatePlayerData(state, action);
+    case UPDATE_ENEMY_WITH_DATA:
+      return updateEnemyData(state, action.data);
     default:
       return state;
   }

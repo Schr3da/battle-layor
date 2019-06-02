@@ -1,9 +1,8 @@
-import { canWalkOver } from "../../shared/utils/MapUtils";
+import { canWalkOver } from "../../../shared/utils/MapUtils";
 
 import { AssetManager } from "./AssetManager";
-import { GameSettings } from "../Settings";
-import { Enemy } from "./Enemy";
-import { Player } from "./Player";
+import { GameSettings } from "../../Settings";
+import { getStateOfStore } from "../../../stores/Store";
 
 const calculateTint = (
   side: number,
@@ -48,18 +47,21 @@ const spriteSorter = (a: any, b: any) => {
   return 0;
 };
 
-const drawWalls = (
-  scene: PIXI.Container,
-  p: Player,
-  _e: { [pseudoID: string]: Enemy },
-  map: any[],
-  assets: AssetManager
-) => {
+const drawWalls = (scene: PIXI.Container, assets: AssetManager) => {
   const zBuffer = [],
-    shadowDepth = 12,
-    position = p.getPosition(),
-    direction = p.getDirection(),
-    plane = p.getPlane();
+    shadowDepth = 12;
+
+  const state = getStateOfStore(),
+    map = state.map.data,
+    p = state.entities.player;
+
+  if (map == null) {
+    return;
+  }
+
+  const position = p.position,
+    direction = p.direction,
+    plane = p.plane;
 
   let rayIdx = 0;
   let perpWallDist = 0;
@@ -174,21 +176,15 @@ const drawWalls = (
   scene.children.sort(spriteSorter);
 };
 
-let prevDt: number = 0;
-let nextDt: number = 0;
+// let prevDt: number = 0;
+// let nextDt: number = 0;
 
-export const updateView = (
-  scene: PIXI.Container,
-  p: Player,
-  e: { [pseudoID: string]: Enemy },
-  m: any[],
-  assets: AssetManager
-) => {
-  drawWalls(scene, p, e, m, assets);
+export const updateView = (scene: PIXI.Container, assets: AssetManager) => {
+  drawWalls(scene, assets);
 
-  prevDt = nextDt;
-  nextDt = performance.now();
+  // prevDt = nextDt;
+  // nextDt = performance.now();
 
-  const dt = (nextDt - prevDt) / 1000;
-  p.update(dt);
+  // const dt = (nextDt - prevDt) / 1000;
+  // p.update(dt);
 };

@@ -1,9 +1,10 @@
+import { MapSettings } from "../../components/Settings";
+
 import {
   IWSResponse,
   WSAction,
   WSResource
 } from "../../providers/WebSocketProvider";
-import { MapSettings } from '../../components/Settings';
 
 export enum MapStructure {
   wall = "#",
@@ -29,18 +30,21 @@ export const receivedMapData = <T>(data: IWSResponse<T>) =>
 export const hasValidMapData = (data: TMap) =>
   (data || []).length > 0 && (data[0] || []).length > 0;
 
-export const drawMap = (
-  canvas: HTMLCanvasElement,
-  data: TMap
-) => {
-	const { resolution, background, foreground, drawOffsetX, drawOffsetY} = MapSettings;
-  
+export const drawMap = (canvas: HTMLCanvasElement, data: TMap) => {
+  const {
+    resolution,
+    background,
+    foreground,
+    drawOffsetX,
+    drawOffsetY
+  } = MapSettings;
+
   if (canvas == null) {
-		return;
+    return;
   }
-  
+
   const context = canvas.getContext("2d")!;
-	context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
   context.translate(drawOffsetX, drawOffsetY);
 
   (data || []).forEach((d, y) => {
@@ -61,12 +65,10 @@ export const setCanvasSize = (canvas: HTMLCanvasElement, data: TMap) => {
     return;
   }
 
-	const { resolution, drawOffsetX, drawOffsetY} = MapSettings,
-  width = data[0].length * resolution + drawOffsetX * 2,
-  height = data.length * resolution + drawOffsetY * 2;
+  const { resolution, drawOffsetX, drawOffsetY } = MapSettings,
+    width = data[0].length * resolution + drawOffsetX * 2,
+    height = data.length * resolution + drawOffsetY * 2;
 
   canvas.setAttribute("width", width + "px");
   canvas.setAttribute("height", height + "px");
 };
-
-
