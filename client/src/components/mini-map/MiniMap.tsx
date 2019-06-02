@@ -1,7 +1,15 @@
 import * as React from "react";
 
-import { TMap, setCanvasSize, drawMap } from "../../shared/utils/MapUtils";
 import { IEntityState } from "../../reducers/EntityReducer";
+import {
+  TMap,
+  setCanvasSize,
+  drawMap,
+  clearCanvas,
+  drawEntities
+} from "../../shared/utils/MapUtils";
+
+import "./MiniMap.less";
 
 export interface IMiniMapProps {
   entities: IEntityState;
@@ -10,13 +18,21 @@ export interface IMiniMapProps {
 
 export class MiniMap extends React.Component<IMiniMapProps, {}> {
   private mapCanvasRef: HTMLCanvasElement | null = null;
+  private entityCanvasRef: HTMLCanvasElement | null = null;
 
-  public componentWillReceiveProps(nextProps) {
-    this.handleMapData(nextProps.data);
+  public componentWillReceiveProps(nextProps: IMiniMapProps) {
+    if (this.props.data != nextProps.data) {
+      this.handleMapData(nextProps.data);
+    }
+
+    if (this.props.entities.player != nextProps.entities.player) {
+      this.handleEntityData(nextProps.entities, nextProps.data);
+    }
   }
 
-  private handleMapData(data: TMap) {
+  private handleMapData(data: TMap | null) {
     if (data == null) {
+      clearCanvas(this.mapCanvasRef);
       return;
     }
 
@@ -25,10 +41,22 @@ export class MiniMap extends React.Component<IMiniMapProps, {}> {
     drawMap(canvas, data);
   }
 
+  private handleEntityData(entities: IEntityState, map: TMap | null) {
+    if (map == null) {
+      clearCanvas(this.entityCanvasRef);
+      return;
+    }
+
+    const canvas = this.entityCanvasRef!;
+    setCanvasSize(canvas, map);
+    drawEntities(canvas, entities);
+  }
+
   public render() {
     return (
-      <div className="mini-map-wrapper">
-        <canvas key="mini-map-canvas" ref={r => (this.mapCanvasRef = r)} />
+      <div className="mini-map-wrapper" key="mini-map-wrapper">
+        <canvas ref={r => (this.mapCanvasRef = r)} />
+        <canvas ref={r => (this.entityCanvasRef = r)} />
       </div>
     );
   }

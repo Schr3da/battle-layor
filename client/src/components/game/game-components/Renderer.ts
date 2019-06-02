@@ -209,7 +209,16 @@ const updatePlayer = () => {
   moveSpeed = dt * 5;
   rotSpeed = dt * 3;
 
-  let sendResult: boolean = false;
+  const willUpdate = Object.keys(controls.activeKeys).some(
+    k => controls.activeKeys[k] === true
+  );
+
+  if (willUpdate == false) {
+    return;
+  }
+
+  let sendResult = false;
+
   if (controls.activeKeys[SupportedKeys.Up]) {
     const xValue =
       map[Math.floor(position.x + direction.x * moveSpeed * 4)][

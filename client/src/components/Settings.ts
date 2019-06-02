@@ -36,6 +36,8 @@ interface IMapSettings {
   foreground: string;
   drawOffsetX: number;
   drawOffsetY: number;
+  playerColor: string;
+  enemyColor: string;
 }
 
 export const MapSettings: IMapSettings = {
@@ -43,5 +45,7 @@ export const MapSettings: IMapSettings = {
   background: "transparent",
   foreground: "gray",
   drawOffsetX: 2,
-  drawOffsetY: 2
+  drawOffsetY: 2,
+  playerColor: "blue",
+  enemyColor: "red"
 };

@@ -74,14 +74,14 @@ export const updatePlayerWithData = (
       );
     }
 
-    return {
+    dispatch({
       position,
       direction,
       plane,
       prevDirX,
       prevPlaneX,
       type: UPDATE_PLAYER_WITH_DATA_ACTION
-    };
+    });
   };
 };
 
