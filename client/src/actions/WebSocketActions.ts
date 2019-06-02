@@ -52,21 +52,21 @@ export const closeWebSocketConnection = () => ({
   type: CLOSE_WS_CONNECTION_ACTION
 });
 
+const receivedUIData = <T>(dispatch: Function, data: IWSResponse<T>) => {
+  switch (data.resource) {
+    default:
+      console.log("receivedWsData UIData: ", dispatch, data);
+      return;
+  }
+};
+
 const receivedGameData = (dispatch: Function, d: IWSResponse<any>) => {
   switch (d.resource) {
     case WSResource.PLAYER:
       dispatch(updateEnemyWithData(d.data as IWSEntity));
       return;
     default:
-      console.log("receivedGameData: ", dispatch, d);
-      return;
-  }
-};
-
-const receivedUIData = <T>(dispatch: Function, data: IWSResponse<T>) => {
-  switch (data.resource) {
-    default:
-      console.log("receivedWsData: ", dispatch, data);
+      console.log("receivedGameData GameData: ", dispatch, d);
       return;
   }
 };
@@ -75,9 +75,9 @@ export const receivedWsData = <T>(data: IWSResponse<T>) => {
   return (dispatch: Function) => {
     switch (data.action) {
       case WSAction.UI:
-        return receivedGameData(dispatch, data);
-      case WSAction.GAME:
         return receivedUIData(dispatch, data);
+      case WSAction.GAME:
+        return receivedGameData(dispatch, data);
       default:
         return;
     }
@@ -89,30 +89,3 @@ export type WebSocketActions =
   | IOpenedWsConnectionAction
   | ISendWsConnectionAction<any>
   | ICloseWsConnectionAction;
-
-// import { IStore } from "../stores/Store";
-// import { WSResource, WSAction } from "../providers/WebSocketProvider";
-
-// export const SEND_PLAYER_DATA_ACTION = "SEND_PLAYER_DATA_ACTION";
-// export interface ISendPlayerDataAction<T> {
-//   data: T;
-//   type: typeof SEND_PLAYER_DATA_ACTION;
-// }
-
-// export const SendPlayerData = () => {
-//   return async (dispatch, getState: () => IStore) => {
-//     const ws = getWebsocketProviderFacade(),
-//       { position, direction, plane, pseudoID } = getState().entities.player;
-
-//     await ws.sendData({
-//       resource: WSResource.PLAYER,
-//       action: WSAction.GAME,
-//       data: {
-//         position,
-//         direction,
-//         plane,
-//         pseudoID
-//       }
-//     });
-//   };
-// };
