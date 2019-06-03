@@ -1,21 +1,47 @@
 import * as PIXI from "pixi.js";
 import { GameSettings } from "../../Settings";
 import { MapStructure } from "./../../../shared/utils/MapUtils";
+import { AssetManagerSprites } from "../../../shared/utils/AssetManagerUtils";
 
 declare var require: any;
 
 const wallImage = require("../../../../assets/img/wall.png");
 const wall = PIXI.BaseTexture.fromImage(wallImage);
 
+const enemyImage = require("../../../../assets/img/enemy.png");
+const enemy = PIXI.BaseTexture.fromImage(enemyImage);
+
+const weaponImage = require("../../../../assets/img/weapon.png");
+const weapon = PIXI.BaseTexture.fromImage(weaponImage);
+weapon.width = 192;
+weapon.height = 182;
+
 export class AssetManager {
   private textures: { [key: string]: PIXI.Texture[] };
+  private sprites: Map<AssetManagerSprites, PIXI.Texture>;
 
   public constructor() {
     const { texWidth, texHeight } = GameSettings;
 
+    this.sprites = new Map();
+    this.sprites.set(
+      AssetManagerSprites.Enemy,
+      new PIXI.Texture(
+        enemy,
+        new PIXI.Rectangle(0, 0, GameSettings.texWidth, GameSettings.texHeight)
+      )
+    );
+
+    this.sprites.set(
+      AssetManagerSprites.Weapon,
+      new PIXI.Texture(
+        weapon,
+        new PIXI.Rectangle(0, 0, weapon.width, weapon.height)
+      )
+    );
+
     this.textures = {
       [MapStructure.wall]: new Array(texWidth),
-      [MapStructure.door]: Array(texWidth),
       [MapStructure.corner]: new Array(texWidth)
     };
 
@@ -34,5 +60,9 @@ export class AssetManager {
 
   public getTexturesForKey(k: MapStructure): PIXI.Texture[] {
     return this.textures[k];
+  }
+
+  public getSpriteForKey(k: AssetManagerSprites) {
+    return this.sprites.get(k);
   }
 }

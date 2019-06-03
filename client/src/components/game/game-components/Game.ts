@@ -4,6 +4,7 @@ import { AssetManager } from "./AssetManager";
 import { Controls } from "./Controls";
 import { GameSettings } from "../../Settings";
 import { updateView } from "./Renderer";
+import { AssetManagerSprites } from "../../../shared/utils/AssetManagerUtils";
 
 export class Game {
   private animationFrameHandler: any;
@@ -37,7 +38,24 @@ export class Game {
       this.scene.addChild(sprite);
     }
 
+    let weapon = new PIXI.Sprite(
+      this.assets.getSpriteForKey(AssetManagerSprites.Weapon)
+    );
+    weapon.position.x = GameSettings.displayWidth - weapon.width * 1.05;
+    weapon.position.y = GameSettings.displayHeight - weapon.height * 0.8;
+    weapon.name = AssetManagerSprites.Weapon;
+    this.scene.addChild(weapon);
+    this.setWeaponVisibility(false);
+
     this.renderer.stage.addChild(this.scene);
+  }
+
+  private setWeaponVisibility(isVisible: boolean) {
+    const sprite = this.scene.getChildByName(AssetManagerSprites.Weapon);
+    if (sprite == null) {
+      return;
+    }
+    sprite.visible = isVisible;
   }
 
   private render = () => this.renderer.render();
@@ -45,6 +63,8 @@ export class Game {
   private update = () => updateView(this.scene, this.assets);
 
   public init() {
+    this.setWeaponVisibility(true);
+
     cancelAnimationFrame(this.animationFrameHandler);
     this.animationFrameHandler = requestAnimationFrame(this.render);
 
@@ -53,6 +73,8 @@ export class Game {
   }
 
   public destroy() {
+    this.setWeaponVisibility(false);
+
     cancelAnimationFrame(this.animationFrameHandler);
     clearInterval(this.updateHandler);
 
