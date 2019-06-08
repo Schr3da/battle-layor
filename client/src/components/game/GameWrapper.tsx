@@ -21,7 +21,6 @@ export class GameWrapper extends React.Component<IGameWrapperProps, {}> {
 
     const { offsetWidth, offsetHeight } = this.componentWrapper;
     this.props.resizeGame(offsetWidth, offsetHeight);
-
     this.props.createGameInstance(this.canvasWrapperRef!);
   }
 

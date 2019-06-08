@@ -1,4 +1,6 @@
 import { Game } from "../components/game/game-components/Game";
+import { UIActions, ON_CONTENT_RESIZE_ACTION } from "../actions/UIActions";
+import { GameSettings } from "../components/Settings";
 import {
   GameActions,
   RECEIVED_INITIAL_GAME_DATA_ACTION,
@@ -9,8 +11,6 @@ import {
   WebSocketActions,
   OPENED_WS_CONNECTION_ACTION
 } from "../actions/WebSocketActions";
-import { GameSettings } from "../components/Settings";
-import { UIActions, ON_CONTENT_RESIZE_ACTION } from "../actions/UIActions";
 
 export interface IGameState {
   instance: Game | null;
@@ -25,7 +25,6 @@ const calculateResolution = (width: number) => width / GameSettings.resolution;
 
 const createInstance = (state: IGameState, wrapper: HTMLDivElement) => {
   const { width, height } = state.canvas;
-  console.log("createInstance ", width, height);
 
   return {
     ...state,
@@ -35,9 +34,6 @@ const createInstance = (state: IGameState, wrapper: HTMLDivElement) => {
 
 const setCanvasSize = (state: IGameState, width: number, height: number) => {
   const resolution = calculateResolution(width);
-
-  console.log("update canvas size ", width, height);
-
   return {
     ...state,
     canvas: { width, height, resolution }

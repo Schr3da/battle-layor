@@ -55,8 +55,11 @@ export class MiniMap extends React.Component<IMiniMapProps, {}> {
   public render() {
     return (
       <div className="mini-map-wrapper" key="mini-map-wrapper">
-        <canvas ref={r => (this.mapCanvasRef = r)} />
-        <canvas ref={r => (this.entityCanvasRef = r)} />
+        <canvas className="world-layer" ref={r => (this.mapCanvasRef = r)} />
+        <canvas
+          className="player-layer"
+          ref={r => (this.entityCanvasRef = r)}
+        />
       </div>
     );
   }
