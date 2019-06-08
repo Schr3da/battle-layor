@@ -19,6 +19,16 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--font-color-primary);
+      }
     }
 
     & > span:first-child {
