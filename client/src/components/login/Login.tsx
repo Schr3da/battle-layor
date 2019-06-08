@@ -49,8 +49,8 @@ export class Login extends React.Component<ILoginProps, {}> {
               id="Capa_1"
               x="0px"
               y="0px"
-              width="28px"
-              height="28px"
+              width="22px"
+              height="22px"
               viewBox="0 0 612 612"
             >
               <g>
