@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
-import { Entry } from "./components/Entry";
 import { initStore } from "./stores/Store";
+import { LayoutContainer } from "./components/layout/LayoutContainer";
 
 declare global {
   interface Window {
@@ -14,7 +14,7 @@ declare global {
 
 export const App = () => (
   <Provider store={initStore()}>
-    <Entry />
+    <LayoutContainer />
   </Provider>
 );
 

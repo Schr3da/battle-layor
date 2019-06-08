@@ -13,13 +13,22 @@ export enum InputField {
   PlayerName = "player"
 }
 
+export enum Theme {
+  Light = "light-theme",
+  Dark = "dark-theme"
+}
+
 export interface IUIState {
+  theme: string;
+  copyright: string;
   isMobile: boolean;
   isLoading: boolean;
   inputs: InputFields;
 }
 
 const initialState = {
+  theme: Theme.Light,
+  copyright: `Copyright © ${new Date().getUTCFullYear()} Georg Strieder. All rights reserved.`,
   isMobile: isMobile(),
   isLoading: false,
   inputs: {}

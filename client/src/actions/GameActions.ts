@@ -5,11 +5,11 @@ import { IControlsState } from "../reducers/ControlsReducer";
 
 export const CREATE_GAME_INSTANCE_ACTION = "CREATE_GAME_INSTANCE_ACTION";
 export interface ICreateGameInstanceAction {
-  wrapper: Element;
+  wrapper: HTMLDivElement;
   type: typeof CREATE_GAME_INSTANCE_ACTION;
 }
 
-export const createGameInstance = (wrapper: Element) => ({
+export const createGameInstance = (wrapper: HTMLDivElement) => ({
   wrapper,
   type: CREATE_GAME_INSTANCE_ACTION
 });

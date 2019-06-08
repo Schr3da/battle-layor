@@ -6,13 +6,18 @@ import {
   createGameInstance,
   destroyGameInstance
 } from "../../actions/GameActions";
+import { handleContentResize } from "../../actions/UIActions";
 
-const mapStateToProps = (_state: IStore) => ({});
+const mapStateToProps = ({ game }: IStore) => ({
+  width: game.canvas.width,
+  height: game.canvas.height
+});
 
 const mapDispatchToProps = (dispatch: Function) => ({
-  createGameInstance: (wrapper: Element) =>
+  createGameInstance: (wrapper: HTMLDivElement) =>
     dispatch(createGameInstance(wrapper)),
-  resizeGame: () => console.log("resize"),
+  resizeGame: (width: number, height: number) =>
+    dispatch(handleContentResize(width, height)),
   destroyGameInstance: () => dispatch(destroyGameInstance())
 });
 

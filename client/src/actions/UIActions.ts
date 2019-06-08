@@ -15,6 +15,19 @@ export interface IOnInputChangeAction {
   type: typeof ON_INPUT_CHANGE_ACTION;
 }
 
+export const ON_CONTENT_RESIZE_ACTION = "ON_CONTENT_RESIZE_ACTION";
+export interface IOnContentResize {
+  width: number;
+  height: number;
+  type: typeof ON_CONTENT_RESIZE_ACTION;
+}
+
+export const handleContentResize = (width: number, height: number) => ({
+  width,
+  height,
+  type: ON_CONTENT_RESIZE_ACTION
+});
+
 export const handleInputChange = (key: string, value: string | number) => ({
   key,
   value,
@@ -96,6 +109,7 @@ export const handleUnregister = () => {
 
 export type UIActions =
   | ISetLoadingAction
+  | IOnContentResize
   | IOnRegisterAction
   | IOnUnregisterAction
   | IOnInputChangeAction;

@@ -9,19 +9,38 @@ import {
   WebSocketActions,
   OPENED_WS_CONNECTION_ACTION
 } from "../actions/WebSocketActions";
+import { GameSettings } from "../components/Settings";
+import { UIActions, ON_CONTENT_RESIZE_ACTION } from "../actions/UIActions";
 
 export interface IGameState {
   instance: Game | null;
+  canvas: {
+    width: number;
+    height: number;
+    resolution: number;
+  };
 }
 
-const initialState = {
-  instance: null
-};
+const calculateResolution = (width: number) => width / GameSettings.resolution;
 
-const createInstance = (state: IGameState, wrapper: Element) => {
+const createInstance = (state: IGameState, wrapper: HTMLDivElement) => {
+  const { width, height } = state.canvas;
+  console.log("createInstance ", width, height);
+
   return {
     ...state,
-    instance: new Game(wrapper)
+    instance: new Game(wrapper, width, height)
+  };
+};
+
+const setCanvasSize = (state: IGameState, width: number, height: number) => {
+  const resolution = calculateResolution(width);
+
+  console.log("update canvas size ", width, height);
+
+  return {
+    ...state,
+    canvas: { width, height, resolution }
   };
 };
 
@@ -45,13 +64,24 @@ const destroyInstance = (state: IGameState) => {
   };
 };
 
-type Actions = GameActions | WebSocketActions;
+const initialState = {
+  instance: null,
+  canvas: {
+    width: 0,
+    height: 0,
+    resolution: calculateResolution(window.innerWidth)
+  }
+};
+
+type Actions = GameActions | WebSocketActions | UIActions;
 
 export const gameReducer = (
   state: IGameState = initialState,
   action: Actions
 ) => {
   switch (action.type) {
+    case ON_CONTENT_RESIZE_ACTION:
+      return setCanvasSize(state, action.width, action.height);
     case CREATE_GAME_INSTANCE_ACTION:
       return createInstance(state, action.wrapper);
     case OPENED_WS_CONNECTION_ACTION:

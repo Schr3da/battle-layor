@@ -4,8 +4,6 @@ interface IGameSettings {
   fps: number;
   resolution: number;
   refreshTime: number;
-  displayWidth: number;
-  displayHeight: number;
   texWidth: number;
   texHeight: number;
   joystickSize: number;
@@ -18,10 +16,8 @@ export const GameSettings: IGameSettings = {
   background: 0xffffff,
   tint: null,
   fps: 60,
-  resolution: 640 / 10,
+  resolution: 10,
   refreshTime: 1000 / 60,
-  displayWidth: 640,
-  displayHeight: 480,
   texWidth: 64,
   texHeight: 64,
   joystickSize: 100,

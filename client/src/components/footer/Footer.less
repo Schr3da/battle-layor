@@ -1,0 +1,29 @@
+.footer {
+  width: 100%;
+  font-size: 12px;
+  flex-basis: 60px;
+  background: var(--border-color);
+
+  .footer-wrapper {
+    min-width: 320px;
+    max-width: 960px;
+    height: 100%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    & > span {
+      margin: 0 10px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    & > span:first-child {
+      flex: 1;
+      color: var(--font-color-secondary);
+    }
+  }
+}

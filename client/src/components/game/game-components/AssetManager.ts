@@ -11,11 +11,6 @@ const wall = PIXI.BaseTexture.fromImage(wallImage);
 const enemyImage = require("../../../../assets/img/enemy.png");
 const enemy = PIXI.BaseTexture.fromImage(enemyImage);
 
-const weaponImage = require("../../../../assets/img/weapon.png");
-const weapon = PIXI.BaseTexture.fromImage(weaponImage);
-weapon.width = 192;
-weapon.height = 182;
-
 export class AssetManager {
   private textures: { [key: string]: PIXI.Texture[] };
   private sprites: Map<AssetManagerSprites, PIXI.Texture>;
@@ -29,14 +24,6 @@ export class AssetManager {
       new PIXI.Texture(
         enemy,
         new PIXI.Rectangle(0, 0, GameSettings.texWidth, GameSettings.texHeight)
-      )
-    );
-
-    this.sprites.set(
-      AssetManagerSprites.Weapon,
-      new PIXI.Texture(
-        weapon,
-        new PIXI.Rectangle(0, 0, weapon.width, weapon.height)
       )
     );
 

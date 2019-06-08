@@ -10,7 +10,8 @@ import {
 const mapStateTopProps = (state: IStore) => {
   return {
     hasLoggedIn:
-      state.entities.player.id != null && state.entities.player.pseudoID,
+      state.entities.player.id != null &&
+      state.entities.player.pseudoID != null,
     inputs: state.ui.inputs
   };
 };

@@ -3,19 +3,26 @@ import * as React from "react";
 import "./GameWrapper.less";
 
 export interface IGameWrapperProps {
-  createGameInstance: (canvasRef: Element) => void;
+  width: number;
+  height: number;
+  createGameInstance: (canvasRef: HTMLDivElement) => void;
   destroyGameInstance: () => void;
-  resizeGame: () => void;
+  resizeGame: (width: number, height: number) => void;
 }
 
 export class GameWrapper extends React.Component<IGameWrapperProps, {}> {
-  private wrapperRef: Element | null = null;
+  private componentWrapper: HTMLDivElement | null = null;
+  private canvasWrapperRef: HTMLDivElement | null = null;
 
   public componentDidMount() {
-    if (this.wrapperRef == null) {
+    if (this.componentWrapper == null) {
       return;
     }
-    this.props.createGameInstance(this.wrapperRef);
+
+    const { offsetWidth, offsetHeight } = this.componentWrapper;
+    this.props.resizeGame(offsetWidth, offsetHeight);
+
+    this.props.createGameInstance(this.canvasWrapperRef!);
   }
 
   public componentWillUnmount() {
@@ -24,10 +31,10 @@ export class GameWrapper extends React.Component<IGameWrapperProps, {}> {
 
   public render() {
     return (
-      <div className="game-wrapper">
+      <div className="game-wrapper" ref={r => (this.componentWrapper = r)}>
         <div
           key="game-canvas"
-          ref={r => (this.wrapperRef = r)}
+          ref={r => (this.canvasWrapperRef = r)}
           className="canvas-wrapper"
         />
         <div className="joystick-wrapper-x" />

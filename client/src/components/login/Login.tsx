@@ -4,7 +4,10 @@ import { Input } from "../../shared/input-field/Input";
 import { InputField, InputFields } from "../../reducers/UIReducer";
 import { getInputValue } from "../../shared/utils/InputUtils";
 
+import "./Login.less";
+
 export interface ILoginProps {
+  hasLoggedIn: boolean;
   inputs: InputFields;
   onInputChange: (key: string, value: string) => void;
   onRegister: () => void;
@@ -21,11 +24,18 @@ export class Login extends React.Component<ILoginProps, {}> {
   };
 
   public render() {
-    const { inputs, onInputChange, onRegister, onUnregister } = this.props;
+    const {
+      hasLoggedIn,
+      inputs,
+      onInputChange,
+      onRegister,
+      onUnregister
+    } = this.props;
 
     return (
-      <div className="ui-wrapper">
-        <div>
+      <div className={`login ${hasLoggedIn ? "hide" : "show"}`}>
+        <div className="form-wrapper">
+          <div className="input-label">Enter Player name to join</div>
           <Input
             id={InputField.PlayerName}
             className="playername"
@@ -34,8 +44,6 @@ export class Login extends React.Component<ILoginProps, {}> {
             onChange={(e, id) => onInputChange(id, e.target.value)}
             onKeyUp={this.handleInputKeyUp}
           />
-        </div>
-        <div>
           <button onClick={onRegister}>Register</button>
           <button onClick={onUnregister}>Unregister</button>
         </div>
