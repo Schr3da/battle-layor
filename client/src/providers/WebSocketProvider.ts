@@ -25,7 +25,7 @@ export enum WSAction {
 }
 
 export enum WSResource {
-  MAP,
+  GAME_SNAPSHOT,
   PLAYER,
   STATS
 }
@@ -70,7 +70,7 @@ export class WebSocketProvider {
     const store = window.store;
     const data = JSON.parse(m.data) as IWSResponse<any>;
 
-    if (data.resource == WSResource.MAP) {
+    if (data.resource == WSResource.GAME_SNAPSHOT) {
       store.dispatch(receivedInitialGameData(data));
       return;
     }

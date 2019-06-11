@@ -2,11 +2,11 @@ import { connect } from "react-redux";
 
 import { IStore } from "../../stores/Store";
 import { GameWrapper } from "./GameWrapper";
+import { handleContentResize } from "../../actions/UIActions";
 import {
   createGameInstance,
   destroyGameInstance
 } from "../../actions/GameActions";
-import { handleContentResize } from "../../actions/UIActions";
 
 const mapStateToProps = ({ game }: IStore) => ({
   width: game.canvas.width,

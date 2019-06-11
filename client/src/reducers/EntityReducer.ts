@@ -15,6 +15,8 @@ import {
   GameActions
 } from "../actions/GameActions";
 import { IWSEntity } from "../shared/utils/EntityUtils";
+import {IWSGameSnapshot} from '../shared/utils/GameUtils';
+import {IWSResponse} from '../providers/WebSocketProvider';
 
 export interface IEntity {
   position: IVector2d;
@@ -73,17 +75,33 @@ const setPlayerMoveSpeed = (state: IEntityState, moveSpeed: number) => {
   return { ...state, player: { ...state.player, moveSpeed } };
 };
 
-const setInitialPosition = (state: IEntityState) => {
-  return {
-    ...state,
-    player: {
-      ...state.player,
-      position: {
-        x: 20,
-        y: 20
-      }
-    }
-  };
+const setInitialPosition = (state: IEntityState, d: IWSResponse<IWSGameSnapshot>) => {
+	const pseudoId = state.player.pseudoID; 
+	if (pseudoId == null || d.data == null) {
+		throw console.error("Player is null ", state.player);
+	} 
+
+  const player = (d.data.players || []).find((p) => p.pseudoID === pseudoId),
+  enemies = (d.data.players || []).filter((e) => e.pseudoID !== pseudoId);
+
+	if (player == null) {
+		throw console.error("No player data found", player)
+	}
+
+	return {
+		...state,
+		player: {...state.player,
+			position: {...player.position},
+		},
+		enemies: enemies.reduce((result, e) => {
+			if (e == null || e.pseudoID === pseudoId) {
+				return result
+			}
+
+			result[e.pseudoID] = e;
+			return result;
+		}, {} as any)
+	}
 };
 
 const updatePlayerData = (
@@ -121,7 +139,7 @@ export const entityReducer = (
 ) => {
   switch (action.type) {
     case RECEIVED_INITIAL_GAME_DATA_ACTION:
-      return setInitialPosition(state);
+      return setInitialPosition(state, action.data);
     case SET_PLAYER_IDS_ACTION:
       return setPlayerIds(state, action.id, action.pseudoID);
     case SET_PLAYER_ROTATION_SPEED_ACTION:

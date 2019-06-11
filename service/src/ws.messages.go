@@ -21,8 +21,8 @@ const (
 type WSResource int
 
 const (
-	//ResourceMap Request map state
-	ResourceMap WSResource = 0
+	//ResourceInitial Request map state
+	ResourceInitial WSResource = 0
 	//ResourcePlayer Request player state
 	ResourcePlayer WSResource = 1
 	//ResourceStats Request stats state
@@ -46,6 +46,12 @@ type WSRequest struct {
 	Data     interface{} `json:"data"`
 }
 
+//GameSnapshot Struct which holds the current game state
+type GameSnapshot struct {
+	World   [MapTilesX][MapTilesY]string `json:"world"`
+	Players map[string]Player            `json:"players"`
+}
+
 //WSBroadcast Broadcast structure
 type WSBroadcast struct {
 	id       string
@@ -59,6 +65,34 @@ type WSPlayerData struct {
 	Direction Vector2d `json:"direction"`
 	Position  Vector2d `json:"position"`
 	Plane     Vector2d `json:"plane"`
+}
+
+//WSGameSnapshot Get current game state for client
+type WSGameSnapshot struct {
+	World   [MapTilesY][MapTilesX]string `json:"world"`
+	Players []WSPlayerData               `json:"players"`
+}
+
+func getSnapshot(g *Game) WSGameSnapshot {
+
+	//TODO Race condition fix
+
+	snapshot := make(chan GameSnapshotReceiver)
+	g.getGameSnapshot <- GameSnapshotSender{
+		receiver: snapshot,
+	}
+
+	data := <-snapshot
+
+	var players = []WSPlayerData{}
+	for _, p := range data.players {
+		players = append(players, p.WSPlayerData)
+	}
+
+	return WSGameSnapshot{
+		World:   data.world,
+		Players: players,
+	}
 }
 
 //NewWSResponse Create a new websocket json response object
@@ -88,8 +122,9 @@ func CreateWSResponse(g *Game, d []byte) ([]byte, error) {
 
 	if g != nil {
 		switch reqData.Resource {
-		case ResourceMap:
-			data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceMap, g.world)
+		case ResourceInitial:
+			d := getSnapshot(g)
+			data := NewWSResponse(http.StatusAccepted, ActionGame, ResourceInitial, d)
 			return data, nil
 		default:
 			return nil, NewError("Unknown resource request")

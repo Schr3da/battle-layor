@@ -37,7 +37,6 @@ export class VirtualGamePad {
   private controllers: IVirtualGamePad | null = null;
 
   constructor() {
-    debugger;
 
     if (isMobile() === false) {
       return;

@@ -4,7 +4,7 @@ package main
 type GRAction int
 
 const (
-	//GameDoesPlayerExist GGRAction to check a player exists or not
+	//GameDoesPlayerExist GRAction to check a player exists or not
 	GameDoesPlayerExist = 0
 	//GameAddNewPlayer GRAction to add a new Player
 	GameAddNewPlayer GRAction = 1
@@ -12,7 +12,20 @@ const (
 	GameRemovePlayer GRAction = 2
 	//GameUpdatePlayer GRAction to update player position
 	GameUpdatePlayer = 3
+	//GetGameSnapshot GRAction to get current game state
+	GetGameSnapshot = 4
 )
+
+//GameSnapshotReceiver Basic Model for GameSnapshotReceiver
+type GameSnapshotReceiver struct {
+	world   [MapTilesY][MapTilesX]string
+	players map[string]Player
+}
+
+//GameSnapshotSender Basic Model for GameSnapshotSender
+type GameSnapshotSender struct {
+	receiver chan GameSnapshotReceiver
+}
 
 //GameHasPlayerSender Basic Model for GameHasPlayerSender
 type GameHasPlayerSender struct {
@@ -37,13 +50,13 @@ type GameSender struct {
 
 //GameAddPlayerData Structure which is used to register a new Player in game
 type GameAddPlayerData struct {
-	name     string
-	pseudoID string
+	Name     string
+	PseudoID string
 }
 
 //AddPlayerMessage Creates AddPlayerMessage consumed by game send channel
 func AddPlayerMessage(id string, pseudoID string, name string) GameSender {
-	data, _ := DataToBytes(GameAddPlayerData{name: name, pseudoID: pseudoID})
+	data, _ := DataToBytes(GameAddPlayerData{Name: name, PseudoID: pseudoID})
 
 	return GameSender{
 		action: GameAddNewPlayer,

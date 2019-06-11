@@ -26,7 +26,7 @@ export const canWalkOver = (value: string) =>
 export const receivedMapData = <T>(data: IWSResponse<T>) =>
   data != null &&
   data.action === WSAction.GAME &&
-  data.resource === WSResource.MAP;
+  data.resource === WSResource.GAME_SNAPSHOT;
 
 export const hasValidMapData = (data: TMap) =>
   (data || []).length > 0 && (data[0] || []).length > 0;

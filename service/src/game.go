@@ -2,23 +2,24 @@ package main
 
 //Game Game
 type Game struct {
-	hasPlayer chan GameHasPlayerSender
-	send      chan GameSender
-	world     [MapTilesY][MapTilesX]string
-	players   map[string]Player
+	getGameSnapshot chan GameSnapshotSender
+	hasPlayer       chan GameHasPlayerSender
+	send            chan GameSender
+	world           [MapTilesY][MapTilesX]string
+	players         map[string]Player
 }
 
 //NewGame Create a new Game instance
 func NewGame() Game {
 	g := Game{
-		hasPlayer: make(chan GameHasPlayerSender),
-		send:      make(chan GameSender),
-		world:     GenerateMap(),
-		players:   map[string]Player{},
+		getGameSnapshot: make(chan GameSnapshotSender),
+		hasPlayer:       make(chan GameHasPlayerSender),
+		send:            make(chan GameSender),
+		world:           GenerateMap(),
+		players:         map[string]Player{},
 	}
 
 	go g.run()
-
 	return g
 }
 
@@ -38,7 +39,7 @@ func (g *Game) addPlayer(id string, d []byte) error {
 		return err
 	}
 
-	player := NewPlayer(id, data.pseudoID, data.name, getRandomSpawnPlace(g.world))
+	player := NewPlayer(id, data.PseudoID, data.Name, getRandomSpawnPlace(g.world))
 	g.players[id] = player
 	return nil
 }
@@ -73,6 +74,11 @@ func (g *Game) run() {
 
 	for {
 		select {
+		case r := <-g.getGameSnapshot:
+			r.receiver <- GameSnapshotReceiver{
+				players: g.players,
+				world:   g.world,
+			}
 		case r := <-g.hasPlayer:
 			r.receiver <- g.doesPlayerExist(r.id)
 		case r := <-g.send:

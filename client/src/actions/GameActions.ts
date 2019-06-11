@@ -1,7 +1,7 @@
 import { IWSResponse } from "../providers/WebSocketProvider";
-import { TMap } from "../shared/utils/MapUtils";
 import { IPlayer } from "../reducers/EntityReducer";
 import { IControlsState } from "../reducers/ControlsReducer";
+import { IWSGameSnapshot } from '../shared/utils/GameUtils';
 
 export const CREATE_GAME_INSTANCE_ACTION = "CREATE_GAME_INSTANCE_ACTION";
 export interface ICreateGameInstanceAction {
@@ -17,11 +17,11 @@ export const createGameInstance = (wrapper: HTMLDivElement) => ({
 export const RECEIVED_INITIAL_GAME_DATA_ACTION =
   "RECEIVED_INITIAL_GAME_DATA_ACTION";
 export interface IReceivedInitialGameDataAction {
-  data: IWSResponse<TMap>;
+  data: IWSResponse<IWSGameSnapshot>;
   type: typeof RECEIVED_INITIAL_GAME_DATA_ACTION;
 }
 
-export const receivedInitialGameData = (data: IWSResponse<TMap>) => ({
+export const receivedInitialGameData = (data: IWSResponse<IWSGameSnapshot>) => ({
   data,
   type: RECEIVED_INITIAL_GAME_DATA_ACTION
 });

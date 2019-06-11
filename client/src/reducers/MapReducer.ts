@@ -5,6 +5,7 @@ import {
   GameActions,
   RECEIVED_INITIAL_GAME_DATA_ACTION
 } from "../actions/GameActions";
+import {IWSGameSnapshot} from '../shared/utils/GameUtils';
 
 export interface IMapState {
   data: TMap | null;
@@ -14,8 +15,8 @@ const initialState = {
   data: null
 };
 
-const handleInitalData = (d: IWSResponse<TMap>) => ({
-  data: [...d.data]
+const handleInitalData = (d: IWSResponse<IWSGameSnapshot>) => ({
+  data: [...(d.data || []).world]
 });
 
 type Actions = MapActions | GameActions;

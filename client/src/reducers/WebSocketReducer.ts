@@ -43,7 +43,7 @@ const fetchInitialGameData = (state: IWebSocketState) => {
   }
 
   state.ws.onSend({
-    resource: WSResource.MAP,
+    resource: WSResource.GAME_SNAPSHOT,
     action: WSAction.GAME,
     data: []
   });
