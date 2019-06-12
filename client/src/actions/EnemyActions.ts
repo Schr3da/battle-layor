@@ -1,14 +1,36 @@
 import { IWSEntity } from "../shared/utils/EntityUtils";
 
-export const UPDATE_ENEMY_WITH_DATA = "UPDATE_ENEMY_WITH_DATA";
+export const ADD_ENEMY_ACTION = "ADD_ENEMY";
+interface IAddEnemy {
+	data: IWSEntity;
+	type: typeof ADD_ENEMY_ACTION;
+}
+
+export const addEnemy = (data: IWSEntity) => ({
+	data,
+	type: ADD_ENEMY_ACTION,
+})
+
+export const UPDATE_ENEMY_WITH_DATA_ACTION = "UPDATE_ENEMY_WITH_DATA";
 interface IUpdateEnemyWithData {
-  data: any;
-  type: typeof UPDATE_ENEMY_WITH_DATA;
+  data: IWSEntity;
+  type: typeof UPDATE_ENEMY_WITH_DATA_ACTION;
 }
 
 export const updateEnemyWithData = (data: IWSEntity) => ({
   data,
-  type: UPDATE_ENEMY_WITH_DATA
+  type: UPDATE_ENEMY_WITH_DATA_ACTION
 });
 
-export type EnemyActions = IUpdateEnemyWithData;
+export const REMOVE_ENEMY_ACTION = "REMOVE_ENEMY";
+interface IRemoveEnemy {
+	pseudoID: string;
+	type: typeof REMOVE_ENEMY_ACTION;
+}
+
+export const removeEnemy = (data: IWSEntity) => ({
+	pseudoID: data.pseudoID,
+	type: REMOVE_ENEMY_ACTION,
+})
+
+export type EnemyActions = IAddEnemy | IUpdateEnemyWithData | IRemoveEnemy;

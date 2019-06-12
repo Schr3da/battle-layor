@@ -1,5 +1,5 @@
 import { IVector2d, createVector2d } from "../shared/vector/Vector2d";
-import { EnemyActions, UPDATE_ENEMY_WITH_DATA } from "../actions/EnemyActions";
+import { EnemyActions, ADD_ENEMY_ACTION, REMOVE_ENEMY_ACTION, UPDATE_ENEMY_WITH_DATA_ACTION, removeEnemy, addEnemy } from "../actions/EnemyActions";
 
 import {
   PlayerActions,
@@ -131,6 +131,22 @@ const updateEnemyData = (state: IEntityState, data: IWSEntity) => {
   };
 };
 
+const addEnemyToState = (state: IEntityState, data: IWSEntity) => {
+	return {
+		...state,
+		enemies: {
+			...state.enemies,
+			[data.pseudoID]: data,
+		}
+	}
+}
+
+const removeEnemyFromState = (state: IEntityState, pseudoID: string) => {
+	const enemies = {...state.enemies};
+	delete enemies[pseudoID];
+	return {...state, ...enemies};
+}
+
 type Actions = EnemyActions | PlayerActions | GameActions;
 
 export const entityReducer = (
@@ -148,8 +164,12 @@ export const entityReducer = (
       return setPlayerMoveSpeed(state, action.moveSpeed);
     case UPDATE_PLAYER_WITH_DATA_ACTION:
       return updatePlayerData(state, action);
-    case UPDATE_ENEMY_WITH_DATA:
+    case ADD_ENEMY_ACTION: 
+    	return addEnemyToState(state, action.data) 
+    case UPDATE_ENEMY_WITH_DATA_ACTION:
       return updateEnemyData(state, action.data);
+    case REMOVE_ENEMY_ACTION:
+    	return removeEnemyFromState(state, action.pseudoID);
     default:
       return state;
   }

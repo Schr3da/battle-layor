@@ -21,14 +21,18 @@ const (
 type WSResource int
 
 const (
-	//ResourceInitial Request map state
+	//ResourceInitial Initial game state
 	ResourceInitial WSResource = 0
-	//ResourcePlayer Request player state
-	ResourcePlayer WSResource = 1
+	//ResourcePlayerConnected Client connected
+	ResourcePlayerConnected WSResource = 1
+	//ResourcePlayerDisconnected Client disconnected
+	ResourcePlayerDisconnected WSResource = 2
+	//ResourcePlayerUpdate Player Update
+	ResourcePlayerUpdate WSResource = 3
 	//ResourceStats Request stats state
-	ResourceStats WSResource = 2
+	ResourceStats WSResource = 4
 	//ResourceConnection Client connection health check state
-	ResourceConnection WSResource = 3
+	ResourceConnection WSResource = 5
 )
 
 //WSResponse Server to client message request structure data are optional
@@ -132,8 +136,8 @@ func CreateWSResponse(g *Game, d []byte) ([]byte, error) {
 	} else {
 
 		switch reqData.Resource {
-		case ResourcePlayer:
-			data := NewWSResponse(http.StatusAccepted, ActionGame, ResourcePlayer, reqData.Data)
+		case ResourcePlayerUpdate:
+			data := NewWSResponse(http.StatusAccepted, ActionGame, ResourcePlayerUpdate, reqData.Data)
 			return data, nil
 		default:
 			return nil, NewError("Unknown resource request")

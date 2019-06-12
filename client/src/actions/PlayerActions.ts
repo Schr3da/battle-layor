@@ -62,7 +62,7 @@ export const updatePlayerWithData = (
     if (id != null && pseudoID != null && sendData == true) {
       dispatch(
         sendWebSocketData({
-          resource: WSResource.PLAYER,
+          resource: WSResource.PLAYER_UPDATED,
           action: WSAction.GAME,
           data: {
             position,

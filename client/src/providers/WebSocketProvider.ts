@@ -26,7 +26,9 @@ export enum WSAction {
 
 export enum WSResource {
   GAME_SNAPSHOT,
-  PLAYER,
+  PLAYER_CONNECTED,	
+  PLAYER_DISCONNECTED,
+  PLAYER_UPDATED,
   STATS
 }
 

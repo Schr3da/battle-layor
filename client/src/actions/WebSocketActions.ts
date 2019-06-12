@@ -62,7 +62,7 @@ const receivedUIData = <T>(dispatch: Function, data: IWSResponse<T>) => {
 
 const receivedGameData = (dispatch: Function, d: IWSResponse<any>) => {
   switch (d.resource) {
-    case WSResource.PLAYER:
+    case WSResource.PLAYER_UPDATED:
       dispatch(updateEnemyWithData(d.data as IWSEntity));
       return;
     default:
