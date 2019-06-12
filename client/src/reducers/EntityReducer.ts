@@ -1,5 +1,5 @@
 import { IVector2d, createVector2d } from "../shared/vector/Vector2d";
-import { EnemyActions, ADD_ENEMY_ACTION, REMOVE_ENEMY_ACTION, UPDATE_ENEMY_WITH_DATA_ACTION, removeEnemy, addEnemy } from "../actions/EnemyActions";
+import { EnemyActions, ADD_ENEMY_ACTION, REMOVE_ENEMY_ACTION, UPDATE_ENEMY_WITH_DATA_ACTION } from "../actions/EnemyActions";
 
 import {
   PlayerActions,
