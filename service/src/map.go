@@ -81,22 +81,43 @@ func generateRoom(start bool, seed *rand.Rand, tiles *[MapTilesY][MapTilesX]stri
 }
 
 func isWalkable(tile string) bool {
-	return tile != wall && tile != free && tile != corner
+	return tile == floor
 }
 
 func getRandomSpawnPlace(tiles [MapTilesY][MapTilesX]string) Vector2d {
-	rand.Seed(time.Now().Unix())
+	var x, y, limitX, limitY int
+	limitX = MapTilesX - 1
+	limitY = MapTilesY - 1
 
+	rand.Seed(time.Now().Unix())
 	for {
 
-		var x = GetRandomValue(0, MapTilesX-1)
-		var y = GetRandomValue(0, MapTilesY-1)
+		x = GetRandomValue(0, limitX)
+		y = GetRandomValue(0, limitY)
 
-		if isWalkable(tiles[y][x]) {
-			return Vector2d{
-				X: float64(x),
-				Y: float64(y),
-			}
+		if x == 0 || x == limitX {
+			continue
+		}
+
+		if isWalkable(tiles[x+1][y]) == false && isWalkable(tiles[x-1][y]) == false {
+			continue
+		}
+
+		if y == 0 || y == limitY {
+			continue
+		}
+
+		if isWalkable(tiles[x][y+1]) == false && isWalkable(tiles[x][y-1]) == false {
+			continue
+		}
+
+		if isWalkable(tiles[x][y]) == false {
+			continue
+		}
+
+		return Vector2d{
+			X: float64(x),
+			Y: float64(y),
 		}
 	}
 }

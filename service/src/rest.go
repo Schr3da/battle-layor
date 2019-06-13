@@ -6,6 +6,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func enableCors(w http.ResponseWriter) {
+	headers := w.Header()
+	headers.Add("Access-Control-Allow-Origin", "*")
+	headers.Add("Vary", "Origin")
+	headers.Add("Vary", "Access-Control-Request-Method")
+	headers.Add("Vary", "Access-Control-Request-Headers")
+	headers.Add("Access-Control-Allow-Headers", "Content-Type, Origin, Accept, token")
+	headers.Add("Access-Control-Allow-Methods", "GET, POST,OPTIONS")
+}
+
 //InitRestHandler Supported REST route handing
 func InitRestHandler(g *Game) {
 	prefix := "rest"
@@ -13,13 +23,26 @@ func InitRestHandler(g *Game) {
 
 	router.PathPrefix(prefix)
 
+	router.HandleFunc("/"+prefix+"/health", func(w http.ResponseWriter, r *http.Request) {
+		enableCors(w)
+		w.WriteHeader(http.StatusOK)
+	}).Methods("GET")
+
 	router.HandleFunc("/"+prefix+"/player/register/", func(w http.ResponseWriter, r *http.Request) {
+		enableCors(w)
 		registerPlayerHandler(w, r, g)
-	}).Methods("POST", "OPTIONS")
+	}).Methods("POST")
 
 	router.HandleFunc("/"+prefix+"/player/unregister/", func(w http.ResponseWriter, r *http.Request) {
+		enableCors(w)
 		unregisterPlayerHandler(w, r, g)
-	}).Methods("POST", "OPTIONS")
+	}).Methods("POST")
+
+	router.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		enableCors(w)
+		w.WriteHeader(http.StatusOK)
+		return
+	})
 
 	http.Handle("/", router)
 }
