@@ -26,6 +26,7 @@ func InitRestHandler(g *Game) {
 	router.HandleFunc("/"+prefix+"/health", func(w http.ResponseWriter, r *http.Request) {
 		enableCors(w)
 		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Service Online"))
 	}).Methods("GET")
 
 	router.HandleFunc("/"+prefix+"/player/register/", func(w http.ResponseWriter, r *http.Request) {
