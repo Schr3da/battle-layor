@@ -8,8 +8,12 @@ const environment = process.env.NODE_ENV,
   project = __dirname.split("/"),
   dist = path.resolve(__dirname, "dist", environment);
 
+const isDebugEnv = () => {
+	return environment === "debug";
+};
+
 module.exports = {
-  mode: environment === "debug" ? "development" : "production",
+  mode: isDebugEnv() ? "development" : "production",
   entry: "./src/index.tsx",
   output: {
     filename: project[project.length - 1] + ".js",
@@ -43,6 +47,9 @@ module.exports = {
     new CleanWebpackPlugin([environment]),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.DefinePlugin({
+    	__STATIC_HOSTED__: true 
+    }),
     new MiniCssExtractPlugin({
       filename: "index.css"
     }),

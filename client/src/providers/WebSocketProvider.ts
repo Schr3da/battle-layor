@@ -44,6 +44,7 @@ export class WebSocketProvider {
   private ws: WebSocket | null = null;
 
   constructor(config: IWebSocketProviderConfig) {
+    
     this.ws = new WebSocket(
       "ws://" +
         getHost() +

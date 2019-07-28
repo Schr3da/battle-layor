@@ -25,11 +25,12 @@ export const post = <T, K>(url: string, data: T): Promise<K | null> => {
     });
 };
 
-export const getHost = (): string => window.location.hostname + ":9000" //window.location.host;
+export const getHost = (): string =>  window.location.host;
 
-export const getOrigin = (): string => "http://" + window.location.hostname + ":9000" //window.location.origin;
+export const getOrigin = (): string => window.location.origin;
 
 export const isJson = (data: string): boolean => {
+  
   try {
     JSON.parse(data);
     return true;
