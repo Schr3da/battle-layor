@@ -48,7 +48,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
-    	__STATIC_HOSTED__: true 
+    	__FIXED_PORT_9000__: (process.argv || []).indexOf("--fixedPort") !== -1
     }),
     new MiniCssExtractPlugin({
       filename: "index.css"

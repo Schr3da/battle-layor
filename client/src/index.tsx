@@ -18,6 +18,10 @@ export const App = () => (
   </Provider>
 );
 
+declare const __FIXED_PORT_9000__;
+
+console.error(__FIXED_PORT_9000__);
+
 let container = document.createElement("div");
 container.setAttribute("class", "app-wrapper");
 document.body.appendChild(container);

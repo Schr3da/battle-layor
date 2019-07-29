@@ -3,6 +3,8 @@ export interface IRestData<T> {
   data: T;
 }
 
+declare const __FIXED_PORT_9000__;
+
 export const post = <T, K>(url: string, data: T): Promise<K | null> => {
   const config: any = {
     method: "POST",
@@ -25,9 +27,20 @@ export const post = <T, K>(url: string, data: T): Promise<K | null> => {
     });
 };
 
-export const getHost = (): string =>  window.location.host;
+export const getHost = (): string =>  {
+	if (__FIXED_PORT_9000__) {
+		return  window.location.hostname + ":9000";
+	}
+	return window.location.host;
+};
 
-export const getOrigin = (): string => window.location.origin;
+export const getOrigin = (): string => {
+	if (__FIXED_PORT_9000__) {
+		return "http://" + window.location.hostname + ":9000"; 
+	}
+	
+	return window.location.origin
+};
 
 export const isJson = (data: string): boolean => {
   
