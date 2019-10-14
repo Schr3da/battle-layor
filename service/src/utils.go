@@ -56,3 +56,33 @@ func SetTimeout(someFunc func(), milliseconds int) {
 	timeout := time.Duration(milliseconds) * time.Millisecond
 	time.AfterFunc(timeout, someFunc)
 }
+
+//ClonePlayerMap Deep Clone map
+func ClonePlayerMap(toClone map[string]Player) map[string]Player {
+	var clonedPlayerMap = make(map[string]Player)
+	for k, v := range toClone {
+		clonedPlayerMap[k] = Player{
+			WSPlayerData: WSPlayerData{
+				PseudoID:  v.PseudoID,
+				Direction: v.Direction,
+				Position:  v.Position,
+				Plane:     v.Plane,
+			},
+			id:     v.id,
+			health: v.health,
+			mode:   v.mode,
+		}
+	}
+	return clonedPlayerMap
+}
+
+//CloneWorld Deep Clone of world
+func CloneWorld(toClone [MapTilesY][MapTilesX]string) [MapTilesY][MapTilesX]string {
+	var clonedWorld [MapTilesY][MapTilesX]string
+	for y := 0; y < MapTilesY; y++ {
+		for x := 0; x < MapTilesX; x++ {
+			clonedWorld[y][x] = toClone[y][x]
+		}
+	}
+	return clonedWorld
+}

@@ -18,7 +18,6 @@ func NewGame() Game {
 		world:           GenerateMap(),
 		players:         map[string]Player{},
 	}
-
 	go g.run()
 	return g
 }
@@ -76,8 +75,8 @@ func (g *Game) run() {
 		select {
 		case r := <-g.getGameSnapshot:
 			r.receiver <- GameSnapshotReceiver{
-				players: g.players,
-				world:   g.world,
+				players: ClonePlayerMap(g.players),
+				world:   CloneWorld(g.world),
 			}
 		case r := <-g.hasPlayer:
 			r.receiver <- g.doesPlayerExist(r.id)

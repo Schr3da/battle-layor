@@ -29,7 +29,7 @@ export class Login extends React.Component<ILoginProps, {}> {
     return (
       <div className={`login ${hasLoggedIn ? "hide" : "show"}`}>
         <div className="logo">
-          <div>Laboratory</div>
+          <div>WS Multiplayer Demo Client</div>
           <div className="logo-small-text">{"Run | Hunt | Survive"}</div>
         </div>
         <div className="form-wrapper">
