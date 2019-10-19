@@ -1,5 +1,5 @@
 # battle-layor
-Simple Muliplayer Online Game (work in progress)
+Simple Muliplayer Online Game
 
 Backend written in Golang
 
